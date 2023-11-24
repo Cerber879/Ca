@@ -42,6 +42,7 @@ export function BottomCanvas({ width, height, onSizeChange }: CanvasProps) {
   }, [height, width]);
 
   return (
+    <>
     <div className="bottom-Bar" id="setBar">
       <button className="button size-canvas" onClick={open}>
         {width} <span>x</span> {height}
@@ -51,11 +52,12 @@ export function BottomCanvas({ width, height, onSizeChange }: CanvasProps) {
         <img className="cursor_img" src="/images/cursor3.svg" alt="Icon" width="20" height="20" />
         <span id="coordinates"></span>
       </div>
-      
-      {isOpen && (
-        <Popup width={width} height={height} close={close} onResize={onSizeChange}/>
-      )}
 
     </div>
+    {isOpen && (
+      <Popup width={width} height={height} close={close} onResize={onSizeChange}/>
+    )}
+    </>
+    
   );
 }

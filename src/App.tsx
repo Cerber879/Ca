@@ -5,6 +5,7 @@
   import { canvas } from "./modules/data";
 
   function App() {
+
     const [width, setWidth] = useState(canvas.select.size.width);
     const [height, setHeight] = useState(canvas.select.size.height);
 
