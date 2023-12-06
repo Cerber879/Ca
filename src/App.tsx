@@ -1,30 +1,31 @@
-  import React, { useState } from "react";
-  import { PrintCanvas } from "./components/PrintCanvas";
-  import { SetCanvas } from "./components/SetCanvas";
-  import { BottomCanvas } from "./components/BottomCanvas";
-  import { canvas } from "./modules/data";
+import React, { useState } from "react";
+import { PrintCanvas } from "./components/PrintCanvas";
+import { SetCanvas } from "./components/SetCanvas";
+import { BottomCanvas } from "./components/BottomCanvas";
+import { canvas } from "./modules/data";
 
-  function App() {
+function App() {
+  const [width, setWidth] = useState(canvas.select.size.width);
+  const [height, setHeight] = useState(canvas.select.size.height);
+  const [inputZoom, setInputZoom] = useState(100);
 
-    const [width, setWidth] = useState(canvas.select.size.width);
-    const [height, setHeight] = useState(canvas.select.size.height);
+  const handleSizeChange = (newWidth: number, newHeight: number) => {
+    setWidth(newWidth);
+    setHeight(newHeight);
+  };
 
-    const handleSizeChange = (newWidth: number, newHeight: number) => {
-      setWidth(newWidth);
-      setHeight(newHeight);
-    };
+  return (
+    <div style={{ top: "42px", left: "0px", width: width * (inputZoom / 100), height: height * (inputZoom / 100), overflow: "hidden", position: "relative" }}>
+      <SetCanvas />
+      <PrintCanvas width={width * (inputZoom / 100)} height={height * (inputZoom / 100)} canvas={canvas} />
+      <BottomCanvas
+        width={width}
+        height={height}
+        onSizeChange={handleSizeChange}
+        AppZoom={setInputZoom}
+      />
+    </div>
+  );
+}
 
-    return (
-      <>
-        <SetCanvas />
-        <PrintCanvas width={width} height={height} canvas={canvas} />
-        <BottomCanvas
-          width={width}
-          height={height}
-          onSizeChange={handleSizeChange}
-        />
-      </>
-    );
-  }
-
-  export default App;
+export default App;

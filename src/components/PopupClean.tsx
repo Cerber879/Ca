@@ -5,17 +5,16 @@ type PopupProps = {
   close: () => void;
 };
 
-let deleteData = false;
+let deleteData = "";
 
 export const deleteDisActive = () => {
-  deleteData = false;
+  deleteData = "";
 }
 
 export function PopupClean({ close }: PopupProps) {
 
   useEffect(() => {
     if(setOpenCleaner()) {
-      console.log("open");
       const overlay = document.getElementById("overlay") as HTMLDivElement;
       const popup = document.getElementById("popup") as HTMLDivElement;
       overlay.style.display = "block";
@@ -25,7 +24,6 @@ export function PopupClean({ close }: PopupProps) {
   
   function closePopup() {
     close();
-    console.log("close");
     const overlay = document.getElementById("overlay") as HTMLDivElement;
     const popup = document.getElementById("popup") as HTMLDivElement;
     overlay.style.display = "none";
@@ -33,23 +31,38 @@ export function PopupClean({ close }: PopupProps) {
   }
 
   function CleanCanvas() {
-    console.log("clean");
-    deleteData = true;
-    console.log(deleteData)
+    getSelected();
     closePopup();
+  }
+
+  function getSelected() {
+    const selectedOption = document.querySelector('input[name="clear"]:checked') as HTMLInputElement; 
+    if (selectedOption) {
+      const selectedValue = selectedOption.value; 
+      deleteData = selectedValue
+    } else {
+      deleteData = ""
+    }
   }
 
   return (
     <>
     <div id="overlay" className="overlay"></div>
-    <div id="popup" className="popup" style={{ width: "220px", height: "85px" }}>
-      <div className="popup-content">
+    <div id="popup" className="popup" style={{ width: "220px", height: "255px" }}>
+      <div>
         <div style={{justifyContent: "center"}} className="flex_block headerPopup">
           <span className="resizeText">Clear entire drawing?</span>
           <button id="closeButton" className="button btn-close" onClick={closePopup}>
             x
           </button>
         </div>
+        <form style={{marginTop: 20}}>
+          <label><input type="radio" name="clear" value="all"/>all</label>
+          <label><input type="radio" name="clear" value="text"/>text</label>
+          <label><input type="radio" name="clear" value="image"/>image</label>
+          <label><input type="radio" name="clear" value="object"/>object</label>
+          <label><input type="radio" name="clear" value="draw"/>draw</label>
+        </form>
         <div className="flex_block menuPopup">
           <button
             id="closeButton"
@@ -74,6 +87,6 @@ export function PopupClean({ close }: PopupProps) {
   );
 }
 
-export function setDeleteData() {
+export function getDeleteData() {
   return deleteData;
 }

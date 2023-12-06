@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Canvas, TextBlock, Position, ImageBlock, GraphicObject } from "../modules/types";
-import { textBlock, graphicBlock } from "../modules/data";
-import { setactivePen, setactiveImage, onClick, setactiveColor, setactiveBorderColor, setactiveObjTriangle, setactiveObSquare, setactiveObjCircle, setObj, setactiveFont, setactiveFontFamilies, setTextBold, setTextItalic, setTextUnderline, setTextStriketrough } from "./SetCanvas";
-import { setDeleteData, deleteDisActive } from "./PopupClean"
+import { graphicBlock, textBlock } from "../modules/data";
+import { setactivePen, setactiveImage, setactiveText, setactiveTextTransparent, setactiveColor, setactiveBorderColor, setactiveObjTriangle, setactiveObSquare, setactiveObjCircle, setactiveObj, setObj, setactiveFont, setactiveFontFamilies, setTextBold, setTextItalic, setTextUnderline, setTextStriketrough } from "./SetCanvas";
+import { zoom } from "./BottomCanvas"
+import { getDeleteData, deleteDisActive } from "./PopupClean"
 import "../index.css";
 
 type CanvasProps = {
@@ -19,15 +20,17 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
   const handleCanvas = (event: React.MouseEvent) => {
     canvasTop = event.currentTarget.getBoundingClientRect().top;
     canvasLeft = event.currentTarget.getBoundingClientRect().left;
-    if(setDeleteData()) {
+    if(getDeleteData() === "all") {
       setInputBlocks([]);
       setImageBlocks([]);
       setDrawPixels([]);
-      setObjBlocksTriangle([]);
-      setObjBlocksSquare([]);
-      setObjBlocksCircle([]);
+      setObjBlocks([]);
       deleteDisActive();
-    }; 
+    } 
+    else if (getDeleteData() === "text") { setInputBlocks([]); deleteDisActive(); }
+    else if (getDeleteData() === "image") { setImageBlocks([]); deleteDisActive(); }
+    else if (getDeleteData() === "object") { setObjBlocks([]); deleteDisActive(); }
+    else if (getDeleteData() === "draw") { setDrawPixels([]); deleteDisActive(); }
   }
 
   const getLinePixels = (x1: number, y1: number, x2: number, y2: number) => {
@@ -58,21 +61,85 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
     return pixels;
   };
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRefs = useRef<HTMLInputElement[]>([]);
   const [drawPixels, setDrawPixels] = useState<{ x: number; y: number }[]>([]);
   const [inputBlocks, setInputBlocks] = useState<TextBlock[]>([]);
   const [imageBlocks, setImageBlocks] = useState<ImageBlock[]>([]);
-  const [objBlocksTriangle, setObjBlocksTriangle] = useState<GraphicObject[]>([]);
-  const [objBlocksSquare, setObjBlocksSquare] = useState<GraphicObject[]>([]);
-  const [objBlocksCircle, setObjBlocksCircle] = useState<GraphicObject[]>([]);
+  const [objBlocks, setObjBlocks] = useState<GraphicObject[]>([]);
 
   const [zIndex, setzIndex] = useState(2);
 
-  const [currentTarget, setCurrentTarget] = useState("");
-  const [searchTarget, setSearchTarget] = useState(true);
+  const [dragg, setDragg] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [draggingSize, setDraggingSize] = useState(false);
   const [delX, setDelX] = useState(0);
   const [delY, setDelY] = useState(0);
+
+  const handleMouseDownSize = (e: { clientX: number; clientY: number; }, x: number, y: number) => {
+    setDraggingSize(true);
+  };
+  
+  const handleMouseMoveSize = (x: number, y: number, id: number, type: string, isNwseSize: boolean) => {
+    if (!draggingSize) {
+      return;
+    }
+
+    setDragg(true);
+  
+    if (type === "text") {
+      const handleMouseMove = (e: { clientX: number; clientY: number; }) => { 
+        const updatedInputBlocks = inputBlocks.map((block) => {
+        if (block.id === id) {
+          return {
+            ...block,
+            width: e.clientX - block.position.x - canvasLeft,
+            height: e.clientY - block.position.y - canvasTop
+          };
+        }
+        return block;
+        });
+        setInputBlocks(updatedInputBlocks);
+      };
+
+      const handleMouseUp = () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseup", handleMouseUp);
+      };
+    
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+
+    }
+    else if (type === "image") {
+      const handleMouseMove = (e: { clientX: number; clientY: number; }) => {
+        const updatedImagesBlocks = imageBlocks.map((block) => {
+          if (block.id === id) {
+            return {
+              ...block,
+              width: e.clientX - block.position.x - canvasLeft,
+              height: e.clientY - block.position.y - canvasTop
+            };
+          }
+          return block;
+        });
+    
+        setImageBlocks(updatedImagesBlocks);
+      };
+    
+      const handleMouseUp = () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseup", handleMouseUp);
+      };
+    
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
+  };
+  
+  const handleMouseUpSize = () => {
+    setDraggingSize(false);
+    setDragg(false);
+  };
 
   const handleMouseDown = (e: { clientX: number; clientY: number; }, x: number, y: number) => {
     setDragging(true);
@@ -80,23 +147,17 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
     setDelY(e.clientY - y);
   };
   
-  const handleMouseMove = (x: number, y: number, id: number, type: string) => {
+  const handleMouseMove = (x: number, y: number, id: number, type: string, isNwseSize: boolean) => {
     if (!dragging) {
       return;
     }
+
+    setDragg(true);
   
     if (type === "text") {
       const handleMouseMove = (e: { clientX: number; clientY: number; }) => { 
         const updatedInputBlocks = inputBlocks.map((inputBlock) => {
         if (inputBlock.id === id) {
-          if (
-            e.clientX - delX + 10 < e.clientX &&
-            e.clientX < e.clientX - delX + inputBlock.width - 10 &&
-            e.clientY - delY + 10 < e.clientY &&
-            e.clientY < e.clientY - delY + inputBlock.height - 10 && 
-            ( searchTarget || currentTarget === "text-target")
-          ) {
-            if (searchTarget) { setCurrentTarget("text-target"); setSearchTarget(false)};
             return {
               ...inputBlock,
               position: {
@@ -104,63 +165,6 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
                 y: e.clientY - delY,
               },
             };
-          } else if (
-            e.clientX < e.clientX - delX + 10 &&
-            e.clientY < e.clientY - delY + 10 && 
-            ( searchTarget || currentTarget === "text-ul")
-          ) {
-            if (searchTarget) { setCurrentTarget("text-ul"); setSearchTarget(false)};
-            return {
-              ...inputBlock,
-              position: {
-                x: inputBlock.position.x - (inputBlock.position.x - e.clientX),
-                y: inputBlock.position.y - (inputBlock.position.y - e.clientY),
-              },
-              width: inputBlock.position.x - e.clientX + inputBlock.width,
-              height: inputBlock.position.y - e.clientY + inputBlock.height
-            };
-          } else if (
-            e.clientX > e.clientX - delX + inputBlock.width - 10 &&
-            e.clientY < e.clientY - delY + 10 && 
-            ( searchTarget || currentTarget === "text-ur")
-          ) {
-            if (searchTarget) { setCurrentTarget("text-ur"); setSearchTarget(false)};
-            return {
-              ...inputBlock,
-              position: {
-                x: inputBlock.position.x,
-                y: inputBlock.position.y - (inputBlock.position.y - e.clientY),
-              },
-              width: e.clientX - inputBlock.position.x,
-              height: inputBlock.position.y - e.clientY + inputBlock.height
-            };
-          } else if (
-            e.clientX < e.clientX - delX + 10 &&
-            e.clientY > e.clientY - delY + inputBlock.height - 10 && 
-            ( searchTarget || currentTarget === "text-dl")
-          ) {
-            if (searchTarget) { setCurrentTarget("text-dl"); setSearchTarget(false)};
-            return {
-              ...inputBlock,
-              position: {
-                x: inputBlock.position.x - (inputBlock.position.x - e.clientX),
-                y: inputBlock.position.y,
-              },
-              width: inputBlock.position.x - e.clientX + inputBlock.width,
-              height: e.clientY - inputBlock.position.y
-            };
-          } else if (
-            e.clientX > e.clientX - delX + inputBlock.width - 10 &&
-            e.clientY > e.clientY - delY + inputBlock.height - 10 && 
-            ( searchTarget || currentTarget === "text-dr")
-          ) {
-            if (searchTarget) {setCurrentTarget("text-dr"); setSearchTarget(false)};
-            return {
-              ...inputBlock,
-              width: e.clientX - inputBlock.position.x,
-              height: e.clientY - inputBlock.position.y
-            };
-          } 
         }
         return inputBlock;
         });
@@ -181,7 +185,6 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
       const handleMouseMove = (e: { clientX: number; clientY: number; }) => {
         const updatedImagesBlocks = imageBlocks.map((block) => {
           if (block.id === id) {
-            if (searchTarget) setCurrentTarget("image-target");
             return {
               ...block,
               position: {
@@ -204,24 +207,49 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
     }
+    else if (type === "graphic") {
+      const handleMouseMove = (e: { clientX: number; clientY: number; }) => {
+        const updatedObjectsBlocks = objBlocks.map((block) => {
+          if (block.id === id) {
+            return {
+              ...block,
+              position: {
+                x: e.clientX - delX,
+                y: e.clientY - delY,
+              },
+            };
+          }
+          return block;
+        });
+    
+        setObjBlocks(updatedObjectsBlocks);
+      };
+    
+      const handleMouseUp = () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        window.removeEventListener("mouseup", handleMouseUp);
+      };
+    
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
   };
   
   const handleMouseUp = () => {
+    setDragg(false);
     setDragging(false);
-    setSearchTarget(true);
-    setCurrentTarget("");
   };
 
   const handleCanvasClick = (event: React.MouseEvent) => {
-    const active = onClick();
+    const active = setactiveText();
     const activeImage = setactiveImage();
     const activeObj = setactiveObjTriangle() || setactiveObSquare() || setactiveObjCircle();
 
     setzIndex(zIndex + 1);
 
     const clickedPosition: Position = {
-      x: event.clientX - 6,
-      y: event.clientY - 5
+      x: event.clientX - canvasLeft,
+      y: event.clientY - canvasTop
     };
   
     if (active) {
@@ -238,82 +266,100 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
           fontWeight: setTextBold(),
           fontStyle: setTextItalic(),
           textDecorationLine: `${setTextUnderline()} ${setTextStriketrough()}`,
-          borderColor: setactiveBorderColor(),
+          borderColor: !setactiveTextTransparent() ? setactiveBorderColor() : "transparent",
           color: setactiveColor(),
           value: textBlock.text.value,
         }
       };
-  
       setInputBlocks([...inputBlocks, inputBlock]);
     } 
     if (activeImage) {
-        const inputElement = document.createElement("input");
-        inputElement.type = "file";
-        inputElement.accept = "image/*";
-        inputElement.onchange = (e: Event) => {
-          const target = e.target as HTMLInputElement;
-          if ((target.files && target.files[0])) {
-            const file = target.files[0];
-            const reader = new FileReader();
-            reader.onload = () => {
-              const imageUrl = reader.result;
-              if (imageUrl && typeof imageUrl === "string") {
-                const imageBlock: ImageBlock = {
-                  id: imageBlocks.length + 1,
-                  position: clickedPosition,
-                  type: "image",
-                  zIndex: zIndex,
-                  imageUrl: imageUrl,
-                };
-                setImageBlocks([...imageBlocks, imageBlock]);
-              }
-            };
-            reader.readAsDataURL(file);
-          }
-        };
-        inputElement.click();
-        return;
-      } 
-      if (activeObj) {
-        let obj = setObj();
-        if (obj === "triangle") {
-          const objBlock: GraphicObject = {
-            id: objBlocksTriangle.length + 1,
-            type: graphicBlock.type,
-            borderColor: setactiveBorderColor(),
-            color: setactiveColor(),
-            zIndex: zIndex,
-            position: clickedPosition, 
-          }
-        setObjBlocksTriangle([...objBlocksTriangle, objBlock])
-        } else if (obj === "square") {
-          const objBlock: GraphicObject = {
-            id: objBlocksSquare.length + 1,
-            type: graphicBlock.type,
-            borderColor: setactiveBorderColor(),
-            color: setactiveColor(),
-            zIndex: zIndex,
-            position: clickedPosition, 
-          }
-        setObjBlocksSquare([...objBlocksSquare, objBlock])
-        } else if (obj === "circle") {
-          const objBlock: GraphicObject = {
-            id: objBlocksCircle.length + 1,
-            type: graphicBlock.type,
-            borderColor: setactiveBorderColor(),
-            color: setactiveColor(),
-            zIndex: zIndex,
-            position: clickedPosition, 
-          }
-        setObjBlocksCircle([...objBlocksCircle, objBlock])
+      const inputElement = document.createElement("input");
+      inputElement.type = "file";
+      inputElement.accept = "image/*";
+      inputElement.onchange = (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        if ((target.files && target.files[0])) {
+          const file = target.files[0];
+          const reader = new FileReader();
+          reader.onload = () => {
+            const imageUrl = reader.result;
+            if (imageUrl && typeof imageUrl === "string") {
+              const image = new Image();
+              image.src = imageUrl;
+              const width = image.naturalWidth;
+              const height = image.naturalHeight;
+              const imageBlock: ImageBlock = {
+                id: imageBlocks.length + 1,
+                position: clickedPosition,
+                type: "image",
+                width: width,
+                height: height,
+                zIndex: zIndex,
+                imageUrl: imageUrl,
+              };
+              setImageBlocks([...imageBlocks, imageBlock]);
+            }
+          };
+          reader.readAsDataURL(file);
         }
-
+      };
+      inputElement.click();
+      return;
+    } 
+    if (activeObj) {
+      let obj = setObj();
+      if (obj === "triangle") {
+        const objBlock: GraphicObject = {
+          id: objBlocks.length + 1,
+          type: "triangle",
+          width: graphicBlock.width,
+          height: graphicBlock.height,
+          borderColor: setactiveObj() === "fill" ? "transparent" : setactiveBorderColor(),
+          color: setactiveObj() === "stroke" ? "transparent" : setactiveColor(),
+          zIndex: zIndex,
+          position: clickedPosition, 
+        }
+      setObjBlocks([...objBlocks, objBlock])
+      } else if (obj === "square") {
+        const objBlock: GraphicObject = {
+          id: objBlocks.length + 1,
+          type: "square",
+          width: graphicBlock.width,
+          height: graphicBlock.height,
+          borderColor: setactiveObj() === "fill" ? "transparent" : setactiveBorderColor(),
+          color: setactiveObj() === "stroke" ? "transparent" : setactiveColor(),
+          zIndex: zIndex,
+          position: clickedPosition, 
+        }
+        setObjBlocks([...objBlocks, objBlock])
+      } else if (obj === "circle") {
+        const objBlock: GraphicObject = {
+          id: objBlocks.length + 1,
+          type: "circle",
+          width: graphicBlock.width,
+          height: graphicBlock.height,
+          borderColor: setactiveObj() === "fill" ? "transparent" : setactiveBorderColor(),
+          color: setactiveObj() === "stroke" ? "transparent" : setactiveColor(),
+          zIndex: zIndex,
+          position: clickedPosition, 
+        }
+        setObjBlocks([...objBlocks, objBlock])
       }
+    }
   }
 
+  const handleMouseClickFocus = (event: React.MouseEvent<HTMLInputElement, MouseEvent>, index: number) => {
+    event.preventDefault();
+    const targetInput = inputRefs.current[index];
+    if (targetInput && document.activeElement !== targetInput) {
+      targetInput.focus();
+    }
+  };
+
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
+    if (inputRefs.current[inputBlocks.length]) {
+      inputRefs.current[inputBlocks.length].focus();
     }
   }, [inputBlocks.length]);  
 
@@ -360,7 +406,7 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
   };
 
   return (
-    <div>
+    <div id="container" style={{ width: width, height: height }}>
       <canvas
         id="canvas"
         className="canvas"
@@ -368,6 +414,7 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
           backgroundColor: canvas.backgroundColor,
           width: `${width}px`, 
           height: `${height}px`,
+          position: "relative"
         }}
         onClick={handleCanvasClick}
         onMouseMove={(event) => draw(event)}
@@ -390,39 +437,65 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
       />
       ))}
       {inputBlocks.map((block) => (
+      <>
+        { document.activeElement === inputRefs.current[block.id] && 
+          <div
+            style={{
+              position: "absolute",
+              zIndex: block.zIndex + 1,
+              left: block.position.x - 1,
+              top: block.position.y - 1,
+              width: block.width * zoom,
+              height: block.height * zoom,
+              border: "1px dashed black",
+              pointerEvents: "none",
+            }}
+          />}
         <input
           id="textInput"
-          className="input-block"
+          className="input-block draggable-element"
           key={block.id}
           style={{
             zIndex: block.zIndex,
-            width: block.width,
-            height: block.height,
-            fontSize: block.text.fontSize,
+            width: block.width * zoom,
+            height: block.height * zoom,
+            fontSize: block.text.fontSize * zoom,
             fontFamily: block.text.fontFamily,
             color: block.text.color,
             fontWeight: block.text.fontWeight,
             fontStyle: block.text.fontStyle,
             textDecorationLine: block.text.textDecorationLine,
             position: "absolute",
-            left: block.position.x,
-            top: block.position.y,
+            left: block.position.x * zoom,
+            top: block.position.y * zoom,
             background: block.text.borderColor,
             border: 'none', 
             outline: 'none', 
             boxShadow: 'none', 
             padding: 0,
           }}
-          ref={inputRef}
-          onMouseDown={(event) => {handleMouseDown(event, block.position.x, block.position.y)}}
-          onMouseMove={() => handleMouseMove(block.position.x, block.position.y, block.id, block.type)}
+          ref={(el) => { if (el) inputRefs.current[block.id] = el}}
+          onClick={(event) => {
+            handleMouseClickFocus(event, block.id)
+          }}
+          onMouseDown={(event) => {handleMouseDown(event, block.position.x, block.position.y); event.preventDefault(); inputRefs.current[block.id].blur()}}
+          onMouseMove={() => { if (!dragg) handleMouseMove(block.position.x, block.position.y, block.id, block.type, false)}}
           onMouseUp={handleMouseUp}
-          onChange={(event) => {
+          onFocus={(event) => {
             const updatedInputBlocks = inputBlocks.map((inputBlock) => {
               if (inputBlock.id === block.id) {
                 return {
                   ...inputBlock,
-                  text: { ...inputBlock.text, value: event.target.value }
+                  text: { 
+                    fontSize: setactiveFont(),
+                    fontFamily: setactiveFontFamilies(),
+                    fontWeight: setTextBold(),
+                    fontStyle: setTextItalic(),
+                    textDecorationLine: `${setTextUnderline()} ${setTextStriketrough()}`,
+                    borderColor: !setactiveTextTransparent() ? setactiveBorderColor() : "transparent",
+                    color: setactiveColor(),
+                    value: event.target.value 
+                  }
                 };
               }
               return inputBlock;
@@ -431,9 +504,26 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
             setInputBlocks(updatedInputBlocks);
           }}
         />
+        { document.activeElement === inputRefs.current[block.id] && 
+          <div 
+            onMouseDown={(event) => {handleMouseDownSize(event, block.position.x, block.position.y) }}
+            onMouseMove={() => { if (!dragg) handleMouseMoveSize(block.position.x, block.position.y, block.id, block.type, true)}}
+            onMouseUp={handleMouseUpSize} 
+            style={{
+              cursor: "nwse-resize", 
+              zIndex: block.zIndex + 1, 
+              position: "absolute", 
+              width: "5px", 
+              height: "5px", 
+              left: block.position.x + (block.width * zoom) - 3.5, 
+              top: block.position.y + (block.height * zoom) - 3.5, 
+              border: "1px solid black"
+            }}
+          />}
+      </>
       ))}
       {imageBlocks.map((block) => (
-        <img
+        <><img
           alt=""
           id={`imageBlock-${block.id}`}
           className="image-block selector"
@@ -443,76 +533,68 @@ export function PrintCanvas({canvas, width, height }: CanvasProps) {
           style={{
             zIndex: block.zIndex,
             position: "absolute",
-            width: "100px",
-            height: "100px",
-            left: block.position.x,
-            top: block.position.y,
+            width: block.width * zoom,
+            height: block.height * zoom,
+            left: block.position.x * zoom,
+            top: block.position.y * zoom,
           }}
-          onMouseDown={(event) => {handleMouseDown(event, block.position.x, block.position.y)}}
-          onMouseMove={() => handleMouseMove(block.position.x, block.position.y, block.id, block.type)}
-          onMouseUp={handleMouseUp}
-        />
+          onMouseDown={(event) => { handleMouseDown(event, block.position.x, block.position.y); } }
+          onMouseMove={() => { if (!dragg) handleMouseMove(block.position.x, block.position.y, block.id, block.type, true)}}
+          onMouseUp={handleMouseUp} />
+          <div
+            onMouseDown={(event) => { handleMouseDownSize(event, block.position.x, block.position.y); } }
+            onMouseMove={() => { if (!dragg)handleMouseMoveSize(block.position.x, block.position.y, block.id, block.type, true)}}
+            onMouseUp={handleMouseUpSize}
+            style={{
+              cursor: "nwse-resize",
+              zIndex: block.zIndex + 1,
+              position: "absolute",
+              width: "10px", 
+              height: "10px", 
+              left: block.position.x + (block.width * zoom) - 10,
+              top: block.position.y + (block.height * zoom) - 10,
+            }} 
+          />
+        </>
       ))}
-      {objBlocksTriangle.map((block) => (
+      {objBlocks.map((block) => (
         <svg 
-        className="image-block obj-block"
-        key={block.id}
-        style={{
-          zIndex: block.zIndex,
-          position: "absolute",
-          width: "130px",
-          height: "130px",
-          left: block.position.x,
-          top: block.position.y
-        }}
-        version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512">
-        <g>
-          <g>
-            <polygon points="256,30 486,472 26,472" fill={block.color} stroke={block.borderColor} strokeWidth="25" />
+          className="image-block obj-block"
+          key={block.id}
+          style={{
+            zIndex: block.zIndex,
+            position: "absolute",
+            width: block.width * zoom,
+            height: block.height * zoom,
+            left: block.position.x * zoom,
+            top: block.position.y * zoom
+          }}
+          onMouseDown={(event) => {handleMouseDown(event, block.position.x, block.position.y); }}
+          onMouseMove={() => { if (!dragg) handleMouseMove(block.position.x, block.position.y, block.id, graphicBlock.type, false)}}
+          onMouseUp={handleMouseUp}
+          version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512">
+          {block.type === "triangle" && (
+            <g>
+              <g>
+                <polygon points="256,30 486,472 26,472" fill={block.color} stroke={block.borderColor} strokeWidth={25} />
+              </g>
+            </g>
+          )}
+          {block.type === "square" && (
+            <g>
+              <g>
+                <rect width="100%" height="100%" fill={block.color} stroke={block.borderColor} strokeWidth={25 * 2} />
+              </g>
+            </g>
+          )}
+          {block.type === "circle" && (
+            <g>
+            <g>
+              <circle cx={256} cy={256} r={250 - 25 / 2} fill={block.color} stroke={block.borderColor} strokeWidth={25} />
+            </g>
           </g>
-        </g>
-      </svg>
-        
-      ))}
-      {objBlocksSquare.map((block) => (
-      <svg 
-        className="image-block obj-block"
-        key={block.id}
-        style={{
-          zIndex: block.zIndex,
-          position: "absolute",
-          width: "130px",
-          height: "130px",
-          left: block.position.x,
-          top: block.position.y
-        }}
-        version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512">
-        <g>
-          <g>
-            <rect width="100%" height="100%" fill={block.color} stroke={block.borderColor} strokeWidth="25" />
-          </g>
-        </g>
-      </svg>
-      ))}
-      {objBlocksCircle.map((block) => (
-      <svg 
-        className="image-block obj-block"
-        key={block.id}
-        style={{
-          zIndex: block.zIndex,
-          position: "absolute",
-          width: "130px",
-          height: "130px",
-          left: block.position.x,
-          top: block.position.y
-        }}
-        version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512">
-        <g>
-          <g>
-            <circle cx="256" cy="256" r="250" fill={block.color} stroke={block.borderColor} strokeWidth="25" />
-          </g>
-        </g>
-      </svg>
+          )}   
+      </svg> 
       ))}
     </div>
   );

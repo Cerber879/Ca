@@ -39,6 +39,8 @@ export type TextBlock = Block & {
 
 export type ImageBlock = Block & {
   type: string;
+  width: number;
+  height: number;
   imageUrl: string;
   zIndex: number;
 };
@@ -46,6 +48,8 @@ export type ImageBlock = Block & {
 export type GraphicObject = Block & {
   type: string;
   color: string;
+  width: number;
+  height: number;
   borderColor: string;
   zIndex: number;
 };
@@ -60,7 +64,14 @@ export type drawItem = {
   items: draw[];
 }
 
+export type Content = {
+  text: TextBlock;
+  image: ImageBlock;
+  object: GraphicObject;
+}
+
 export type Canvas = {
+  block: Content;
   backgroundColor: string;
   select: Select;
 };

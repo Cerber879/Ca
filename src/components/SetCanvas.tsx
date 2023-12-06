@@ -3,11 +3,14 @@ import "../index.css";
 import { PopupClean } from "./PopupClean";
 import { PopupFonts } from "./PopupFonts";
 import { PopupFontFamily } from "./PopupFontFamily";
+import { PopupColors } from "./PopupColors";
 
 let openCleaner = false;
 let active = "";
 let activePen = false;
 let activeText = false;
+let activeTextTransparent = true;
+let activeTextMuddy = false;
 let activeTextBold = false;
 let activeTextItalic = false;
 let activeTextUnderLine = false;
@@ -16,11 +19,15 @@ let activeImage = false;
 let activeObjTriangle = false;
 let activeObjSquare = false;
 let activeObjCircle = false;
+let activeObjStroke = true;
+let activeObjFill = false;
+let activeObjFillStroke = false;
 let obj = "";
 let activeColor = "black";
 let activeColorBorder = "white";
 let activeFont = 12;
 let openFonts = false;
+let openColors = false;
 let activeFontFamily= "Arial";
 let openFontFamilies = false;
 
@@ -29,6 +36,7 @@ export function SetCanvas() {
   const [isCleaneerOpen, serIsCleaneerOpen] = useState(false);
   const [isFontSizesOpen, serIsFontSizesOpen] = useState(false);
   const [isFontFamiliesOpen, serIsFontFamiliesOpen] = useState(false);
+  const [isColorsOpen, serIsColorsOpen] = useState(false);
 
   const [btnStylePen, setBtnStylePen] = useState({ backgroundColor: "#3f51b5" });
   const [btnStyleText, setBtnStyleText] = useState({ backgroundColor: "#3f51b5" });
@@ -40,12 +48,17 @@ export function SetCanvas() {
   const [btnStyleTextLineStriketrough, setBtnStyleTextLineStriketrough] = useState({ backgroundColor: "#3f51b5" });
 
   const [typeColor, setTypeColor] = useState(true);
-  const [styleColor, setStyleColor] = useState("rgb(0, 0, 0)");
-  const [styleColorBorder, setStyleColorBorder] = useState("rgb(255, 255, 255)");
+
+  const [btnStyleTextTransparent, setBtnStyleTextTransparent] = useState({  backgroundColor: "#ffffff" });
+  const [btnStyleTextMuddy, setBtnStyleTextMuddy] = useState({ backgroundColor: "#3f51b5" });
 
   const [btnStyleTriangle, setBtnStyleTriangle] = useState({ backgroundColor: "#3f51b5" })
   const [btnStyleSquare, setBtnStyleSquare] = useState({ backgroundColor: "#3f51b5" })
   const [btnStyleCircle, setBtnStyleCircle] = useState({ backgroundColor: "#3f51b5" })
+
+  const [btnStyleStroke, setBtnStyleStroke] = useState({ backgroundColor: "#ffffff" })
+  const [btnStyleFill, setBtnStyleFill] = useState({ backgroundColor: "#3f51b5" })
+  const [btnStyleFillStroke, setBtnStyleFillStroke] = useState({ backgroundColor: "#3f51b5" })
 
   const closeOrOpen = () => {
     if(openCleaner === false){
@@ -76,12 +89,18 @@ export function SetCanvas() {
       serIsFontFamiliesOpen(false)
     }
   }
+  
+  const closeOrOpenColors = () => {
+    if(openColors === false){
+      openColors = true;
+      serIsColorsOpen(true)
+    } else {
+      openColors = false;
+      serIsColorsOpen(false)
+    }
+  }
 
   const handleOffClick = () => {
-    if (activeTextBold) { handleClickTextBold() }
-    if (activeTextItalic) { handleClickTextItalic() }
-    if (activeTextUnderLine) { handleClickTextUnderLine() }
-    if (activeTextLineStriketrough) { handleClickTextStrikeTrough() }
     if (activePen === true && active !== "Pen") { handleClickPen(); }
     if (activeText === true && active !== "Text") { handleClickText(); }
     if (activeImage === true && active !== "Image") { handleClickImage(); }
@@ -133,6 +152,50 @@ export function SetCanvas() {
         activeText = false;
         setBtnStyleText({ backgroundColor: "#3f51b5" })
         svgIcon.setAttribute('src', '/images/text2.svg');
+    } 
+  };
+
+  const SetHandleClickTextHoverTransparent = () => {
+    if (activeTextTransparent === false) { setBtnStyleTextTransparent({ backgroundColor: "#6489ef" }) }
+  }
+  
+  const SetHandleClickTextNotHoverTransparent = () => {
+    if (activeTextTransparent === false) {setBtnStyleTextTransparent({ backgroundColor: "#3f51b5" })}
+  }
+
+  const SetHandleClickTextTransparent = () => {
+    if (activeTextMuddy === true) SetHandleClickTextMuddy();
+    const svgIcon = document.getElementById('svg_icon_text_transparent') as HTMLImageElement;
+    if (activeTextTransparent === false) {
+      activeTextTransparent = true;
+        setBtnStyleTextTransparent({ backgroundColor: "#ffffff" })
+        svgIcon.setAttribute('src', '/images/text_hover.svg');
+    } else {
+      activeTextTransparent = false;
+        setBtnStyleTextTransparent({ backgroundColor: "#3f51b5" })
+        svgIcon.setAttribute('src', '/images/text2.svg');
+    } 
+  };
+
+  const SetHandleClickTextHoverMuddy = () => {
+    if (activeTextMuddy === false) { setBtnStyleTextMuddy({ backgroundColor: "#6489ef" }) }
+  }
+  
+  const SetHandleClickTextNotHoverMuddy = () => {
+    if (activeTextMuddy === false) {setBtnStyleTextMuddy({ backgroundColor: "#3f51b5" })}
+  }
+
+  const SetHandleClickTextMuddy = () => {
+    if (activeTextTransparent === true) SetHandleClickTextTransparent();
+    const svgIcon = document.getElementById('svg_icon_text_muddy') as HTMLImageElement;
+    if (activeTextMuddy === false) {
+        activeTextMuddy = true;
+        setBtnStyleTextMuddy({ backgroundColor: "#ffffff" })
+        svgIcon.setAttribute('src', '/images/text_hover2.svg');
+    } else {
+        activeTextMuddy = false;
+        setBtnStyleTextMuddy({ backgroundColor: "#3f51b5" })
+        svgIcon.setAttribute('src', '/images/text3.svg');
     } 
   };
 
@@ -312,16 +375,79 @@ export function SetCanvas() {
     }
   }
 
-  const handleClickColorBlack = () => { if (typeColor) {setStyleColor("rgb(0, 0, 0)"); activeColor = "rgb(0, 0, 0)"}
-                                        else { setStyleColorBorder("rgb(0, 0, 0)"); activeColorBorder = "rgb(0, 0, 0)" } };
-  const handleClickColorWhite = () => { if (typeColor) { setStyleColor("rgb(255, 255, 255)"); activeColor = "rgb(255, 255, 255)" } 
-                                        else { setStyleColorBorder("rgb(255, 255, 255)"); activeColorBorder = "rgb(255, 255, 255)" } };
-  const handleClickColorBlue = () => { if (typeColor) { setStyleColor("rgb(36, 123, 255)"); activeColor = "rgb(36, 123, 255)"} 
-                                       else { setStyleColorBorder("rgb(36, 123, 255)"); activeColorBorder = "rgb(36, 123, 255)" } };
-  const handleClickColorRed = () => { if (typeColor) { setStyleColor("rgb(255, 0, 0)"); activeColor = "rgb(255, 0, 0)" } 
-                                      else { setStyleColorBorder("rgb(255, 0, 0)"); activeColorBorder = "rgb(255, 0, 0)" } };
-  const handleClickColorGreen = () => { if (typeColor) { setStyleColor("rgb(0, 255, 26)"); activeColor = "rgb(0, 255, 26)" } 
-                                        else { setStyleColorBorder("rgb(0, 255, 26)"); activeColorBorder = "rgb(0, 255, 26)" } };
+  const handleClickStrokeHover = () => {
+    if (activeObjStroke === false) { setBtnStyleStroke({ backgroundColor: "#6489ef" }) }
+  }
+
+  const handleClickStrokeNotHover = () => {
+    if (activeObjStroke === false) {setBtnStyleStroke({ backgroundColor: "#3f51b5" })}
+  }
+
+  const handleClickObjStroke = () => {
+    const svgIcon = document.getElementById('svg_icon_stroke') as HTMLImageElement;
+    if (activeObjStroke === false) {
+      activeObjStroke = true;
+      setBtnStyleStroke({ backgroundColor: "#ffffff" })
+      svgIcon.setAttribute('src', '/images/stroke_active.svg');
+    } else {
+      activeObjStroke = false;
+      setBtnStyleStroke({ backgroundColor: "#3f51b5" })
+      svgIcon.setAttribute('src', '/images/stroke.svg');
+    }
+  }
+
+  const handleClickFillHover = () => {
+    if (activeObjFill === false) { setBtnStyleFill({ backgroundColor: "#6489ef" }) }
+  }
+
+  const handleClickFillNotHover = () => {
+    if (activeObjFill === false) {setBtnStyleFill({ backgroundColor: "#3f51b5" })}
+  }
+
+  const handleClickObjFill = () => {
+    const svgIcon = document.getElementById('svg_icon_fill') as HTMLImageElement;
+    if (activeObjFill === false) {
+      activeObjFill = true;
+      setBtnStyleFill({ backgroundColor: "#ffffff" })
+      svgIcon.setAttribute('src', '/images/fill_active.svg');
+    } else {
+      activeObjFill = false;
+      setBtnStyleFill({ backgroundColor: "#3f51b5" })
+      svgIcon.setAttribute('src', '/images/fill.svg');
+    }
+  }
+
+  const handleClickFillStrokeHover = () => {
+    if (activeObjFillStroke === false) { setBtnStyleFillStroke({ backgroundColor: "#6489ef" }) }
+  }
+
+  const handleClickFillStrokeNotHover = () => {
+    if (activeObjFillStroke === false) {setBtnStyleFillStroke({ backgroundColor: "#3f51b5" })}
+  }
+
+  const handleClickObjFillStroke = () => {
+    const svgIcon = document.getElementById('svg_icon_fill_stroke') as HTMLImageElement;
+    if (activeObjFillStroke === false) {
+      activeObjFillStroke = true;
+      setBtnStyleFillStroke({ backgroundColor: "#ffffff" })
+      svgIcon.setAttribute('src', '/images/fill_stroke_active.svg');
+    } else {
+      activeObjFillStroke = false;
+      setBtnStyleFillStroke({ backgroundColor: "#3f51b5" })
+      svgIcon.setAttribute('src', '/images/fill_stroke.svg');
+    }
+  }
+
+  const handleClickColorBlack = () => { if (typeColor) { activeColor = "rgb(0, 0, 0)"}
+                                        else { activeColorBorder = "rgb(0, 0, 0)" } };
+  const handleClickColorWhite = () => { if (typeColor) { activeColor = "rgb(255, 255, 255)" } 
+                                        else { activeColorBorder = "rgb(255, 255, 255)" } };
+  const handleClickColorBlue = () => { if (typeColor) { activeColor = "rgb(36, 123, 255)"} 
+                                       else { activeColorBorder = "rgb(36, 123, 255)" } };
+  const handleClickColorRed = () => { if (typeColor) { activeColor = "rgb(255, 0, 0)" } 
+                                      else { activeColorBorder = "rgb(255, 0, 0)" } };
+  const handleClickColorGreen = () => { if (typeColor) { activeColor = "rgb(0, 255, 26)" } 
+                                        else { activeColorBorder = "rgb(0, 255, 26)" } };
 
 
   return (
@@ -344,6 +470,9 @@ export function SetCanvas() {
       <span className="divider"></span>
       {activeText && (
         <>
+          <button className="text svg_btn" onMouseEnter={SetHandleClickTextHoverTransparent} onMouseLeave={SetHandleClickTextNotHoverTransparent} onClick={SetHandleClickTextTransparent} style={btnStyleTextTransparent}><img id="svg_icon_text_transparent" src={!activeTextTransparent ? "/images/text2.svg" : "/images/text_hover.svg"} alt="Icon" width="17" height="17" /></button>
+          <button className="text svg_btn" onMouseEnter={SetHandleClickTextHoverMuddy} onMouseLeave={SetHandleClickTextNotHoverMuddy} onClick={SetHandleClickTextMuddy} style={btnStyleTextMuddy}><img id="svg_icon_text_muddy" src={!activeTextMuddy ? "/images/text3.svg" : "/images/text_hover2.svg"} alt="Icon" width="17" height="17" /></button>
+          <span className="divider"></span>
           <button onClick={closeOrOpenFontSizes} id="fontBar" className="flex_block hover">
             <img id="svg_icon_font" src="/images/font1.svg" alt="Icon" width="13" height="13" />
             <span className="fontSize">{activeFont}</span>
@@ -355,15 +484,24 @@ export function SetCanvas() {
             <img id="svg_icon_arrow" src="/images/down_arrow.svg" alt="Icon" width="6" height="6" />
           </button>
           <span className="divider"></span>
-          <button className="text svg_btn" onMouseEnter={handleClickTextBoldHover} onMouseLeave={handleClickTextBoldNotHover} onClick={handleClickTextBold} style={btnStyleTextBold}><img id="svg_icon_text_bold" src="/images/text_bold.svg" alt="Icon" width="17" height="17" /></button>
-          <button className="text svg_btn" onMouseEnter={handleClickTextItalicHover} onMouseLeave={handleClickTextItalicNotHover} onClick={handleClickTextItalic} style={btnStyleTextItalic}><img id="svg_icon_text_italic" src="/images/text_italic.svg" alt="Icon" width="17" height="17" /></button>
-          <button className="text svg_btn" onMouseEnter={handleClickTextUnderLineHover} onMouseLeave={handleClickTextUnderLineNotHover} onClick={handleClickTextUnderLine} style={btnStyleTextUnderLine}><img id="svg_icon_text_underline" src="/images/text_underline.svg" alt="Icon" width="17" height="17" /></button>
-          <button className="text svg_btn" onMouseEnter={handleClickTextStrikeTroughHover} onMouseLeave={handleClickTextStrikeTroughNotHover} onClick={handleClickTextStrikeTrough} style={btnStyleTextLineStriketrough}><img id="svg_icon_text_striketrough" src="/images/text_striketrough.svg" alt="Icon" width="17" height="17" /></button>
+          <button className="text svg_btn" onMouseEnter={handleClickTextBoldHover} onMouseLeave={handleClickTextBoldNotHover} onClick={handleClickTextBold} style={btnStyleTextBold}><img id="svg_icon_text_bold" src={!activeTextBold ? "/images/text_bold.svg" : "/images/text_bold_active.svg"} alt="Icon" width="17" height="17" /></button>
+          <button className="text svg_btn" onMouseEnter={handleClickTextItalicHover} onMouseLeave={handleClickTextItalicNotHover} onClick={handleClickTextItalic} style={btnStyleTextItalic}><img id="svg_icon_text_italic" src={!activeTextItalic ? "/images/text_italic.svg" : "/images/text_italic_active.svg"} alt="Icon" width="17" height="17" /></button>
+          <button className="text svg_btn" onMouseEnter={handleClickTextUnderLineHover} onMouseLeave={handleClickTextUnderLineNotHover} onClick={handleClickTextUnderLine} style={btnStyleTextUnderLine}><img id="svg_icon_text_underline" src={!activeTextUnderLine ? "/images/text_underline.svg" : "/images/text_underline_active.svg"} alt="Icon" width="17" height="17" /></button>
+          <button className="text svg_btn" onMouseEnter={handleClickTextStrikeTroughHover} onMouseLeave={handleClickTextStrikeTroughNotHover} onClick={handleClickTextStrikeTrough} style={btnStyleTextLineStriketrough}><img id="svg_icon_text_striketrough" src={!activeTextLineStriketrough ? "/images/text_striketrough.svg" : "/images/text_striketrough_active.svg"} alt="Icon" width="17" height="17" /></button>
+          <span className="divider"></span>
+        </>
+      )}
+      {(activeObjTriangle || activeObjSquare || activeObjCircle) && (
+        <>
+          <button className="text svg_btn" onMouseEnter={handleClickStrokeHover} onMouseLeave={handleClickStrokeNotHover} onClick={() => { if(activeObjFill) handleClickObjFill(); if(activeObjFillStroke) handleClickObjFillStroke();  handleClickObjStroke()}} style={btnStyleStroke}><img id="svg_icon_stroke" src={!activeObjStroke ? "/images/stroke.svg" : "/images/stroke_active.svg"} alt="Icon" width="15" height="15" /></button>
+          <button className="text svg_btn" onMouseEnter={handleClickFillHover} onMouseLeave={handleClickFillNotHover} onClick={() => { if(activeObjStroke) handleClickObjStroke(); if(activeObjFillStroke) handleClickObjFillStroke();  handleClickObjFill()}} style={btnStyleFill}><img id="svg_icon_fill" src={!activeObjFill ? "/images/fill.svg" : "/images/fill_active.svg"} alt="Icon" width="15" height="15" /></button>
+          <button className="text svg_btn" onMouseEnter={handleClickFillStrokeHover} onMouseLeave={handleClickFillStrokeNotHover} onClick={() => { if(activeObjFill) handleClickObjFill(); if(activeObjStroke) handleClickObjStroke();  handleClickObjFillStroke()}} style={btnStyleFillStroke}><img id="svg_icon_fill_stroke" src={!activeObjFillStroke ? "/images/fill_stroke.svg" : "/images/fill_stroke_active.svg"} alt="Icon" width="15" height="15" /></button>
           <span className="divider"></span>
         </>
       )}
       <div className="flex_block">
-        <button id="active-color" onClick={() => {if(typeColor) {setTypeColor(false)} else {setTypeColor(true)}}} style={{ backgroundColor: `${styleColor}`, border: `5px solid ${styleColorBorder}`}}></button>
+        <button id="active-color" onClick={closeOrOpenColors} style={{ backgroundColor: `${activeColor}`, border: `5px solid ${activeColorBorder}`}}></button>
+        <button onClick={() => {if(typeColor) {setTypeColor(false)} else {setTypeColor(true)}}} style={{ paddingRight: "1px", marginRight: "-5px", marginLeft: "-10px"}} className="color-button hover"><img id="svg_icon_color" src="/images/refresh.svg" alt="Icon" width="18" height="18" /></button>
         <button onClick={handleClickColorBlack} className="color-button hover"><img id="svg_icon_color" src="/images/black.svg" alt="Icon" width="18" height="18" /></button>
         <button onClick={handleClickColorWhite} className="color-button hover"><img id="svg_icon_color" src="/images/white.svg" alt="Icon" width="18" height="18" /></button>
         <button onClick={handleClickColorBlue} className="color-button hover"><img id="svg_icon_color" src="/images/blue.svg" alt="Icon" width="18" height="18" /></button>
@@ -380,26 +518,34 @@ export function SetCanvas() {
     {isCleaneerOpen && (
       <PopupClean close={closeOrOpen} />
     )}
+    {isColorsOpen && (
+      <PopupColors close={closeOrOpenColors} />
+    )}
     </>
   );
 }
 
-export function onClick(): boolean { return activeText; }
+export function setactiveText(): boolean { return activeText; }
+export function setactiveTextTransparent(): boolean { if (activeTextTransparent) return true; else return false}
 export function setactiveImage(): boolean { return activeImage; }
 export function setactivePen(): boolean { return activePen; }
 export function setactiveObjTriangle(): boolean { return activeObjTriangle; }
 export function setactiveObSquare(): boolean { return activeObjSquare; }
 export function setactiveObjCircle(): boolean { return activeObjCircle; }
+export function setactiveObj(): string { if(activeObjStroke) return "stroke"; else if(activeObjFill) return "fill"; else return "fill_stroke" }
 export function setObj(): string { return obj; }
 export function setactiveColor(): string { return activeColor; }
 export function setactiveBorderColor(): string { return activeColorBorder; }
 export function setOpenCleaner(): boolean { return openCleaner; }
+export function setOpenColors(): boolean { return openColors; }
 export function setIsOpenFonts(): boolean { return openFonts; }
 export function setactiveFont(): number { return activeFont; }
 export function setFont(newFont: number) { activeFont = newFont }
 export function setIsOpenFontFamilies(): boolean { return openFontFamilies; }
 export function setactiveFontFamilies(): string { return activeFontFamily; }
 export function setFontFamily(newFont: string) { activeFontFamily = newFont }
+export function setActiveColor(newColor:string) { activeColor = newColor }
+export function setActiveColorBack(newColor:string) { activeColorBorder = newColor }
 export function setTextBold():string { if (activeTextBold) { return "bold" } else { return "normal" } }
 export function setTextItalic():string { if (activeTextItalic) { return "italic" } else { return "none" } }
 export function setTextUnderline():string { if (activeTextUnderLine) { return "underline" } else { return "" } }
