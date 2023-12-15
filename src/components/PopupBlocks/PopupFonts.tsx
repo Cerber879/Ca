@@ -1,7 +1,11 @@
 import { useEffect } from "react";
-import { setIsOpenFonts, setFont } from "./SetCanvas"
 
-import "../index.css";
+import { setIsActiveFont } from "../../reducers/setBar/StyleElements"
+
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../ReduxStore";
+
+import "../../index.css";
 
 type PopupProps = {
   close: () => void;
@@ -9,16 +13,17 @@ type PopupProps = {
 
 export function PopupFonts({ close }: PopupProps) {
 
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
+  
   useEffect(() => {
-    if(setIsOpenFonts()) {
-      const popup = document.getElementById("popup") as HTMLDivElement;
-      popup.style.display = "block";
-    };
+    const popup = document.getElementById("popup") as HTMLDivElement;
+    popup.style.display = "block";
   }, [])
   
   function closePopup(font: number) {
     close();
-    setFont(font);
+    dispatch(setIsActiveFont(font));
     const popup = document.getElementById("popup") as HTMLDivElement;
     popup.style.display = "none";
   }

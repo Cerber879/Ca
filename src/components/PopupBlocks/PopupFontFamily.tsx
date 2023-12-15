@@ -1,7 +1,11 @@
 import { useEffect } from "react";
-import { setIsOpenFontFamilies, setFontFamily } from "./SetCanvas"
 
-import "../index.css";
+import { setIsActiveFontFamily } from "../../reducers/setBar/StyleElements"
+
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../ReduxStore";
+
+import "../../index.css";
 
 type PopupProps = {
   close: () => void;
@@ -9,16 +13,18 @@ type PopupProps = {
 
 export function PopupFontFamily({ close }: PopupProps) {
 
+
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    if(setIsOpenFontFamilies()) {
-      const popup = document.getElementById("popup") as HTMLDivElement;
-      popup.style.display = "block";
-    };
+    const popup = document.getElementById("popup") as HTMLDivElement;
+    popup.style.display = "block";
   }, [])
   
   function closePopup(font: string) {
     close();
-    setFontFamily(font);
+    dispatch(setIsActiveFontFamily(font));
     const popup = document.getElementById("popup") as HTMLDivElement;
     popup.style.display = "none";
   }

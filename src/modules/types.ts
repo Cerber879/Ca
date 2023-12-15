@@ -34,7 +34,6 @@ export type TextBlock = Block & {
   width: number;
   height: number;
   text: standartText;
-  zIndex: number;
 };
 
 export type ImageBlock = Block & {
@@ -42,7 +41,6 @@ export type ImageBlock = Block & {
   width: number;
   height: number;
   imageUrl: string;
-  zIndex: number;
 };
 
 export type GraphicObject = Block & {
@@ -51,7 +49,6 @@ export type GraphicObject = Block & {
   width: number;
   height: number;
   borderColor: string;
-  zIndex: number;
 };
 
 export type draw = {
@@ -64,14 +61,13 @@ export type drawItem = {
   items: draw[];
 }
 
-export type Content = {
-  text: TextBlock;
-  image: ImageBlock;
-  object: GraphicObject;
-}
+export type ObjectType = TextBlock | ImageBlock | GraphicObject
+
+export type ObjectList = ObjectType[]
+
 
 export type Canvas = {
-  block: Content;
+  objects: ObjectList;
   backgroundColor: string;
   select: Select;
 };

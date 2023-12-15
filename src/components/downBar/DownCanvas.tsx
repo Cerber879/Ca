@@ -1,6 +1,11 @@
 import {  useEffect, useState } from "react";
-import { canvasLeft, canvasTop } from "./PrintCanvas";
-import { Popup } from "./Popup";
+import { canvasLeft, canvasTop } from "../canvas/PrintCanvas";
+import { PopupResize } from "../PopupBlocks/PopupResize";
+
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../ReduxStore";
+
+import { PopupStatus } from "../PopupBlocks/PopupStatus";
 
 type CanvasProps = {
   width: number;
@@ -9,11 +14,14 @@ type CanvasProps = {
   AppZoom: (inputZoom: number) => void;
 };
 
-export let openBlock = false;
 export let zoom = 1;   
 
-export function BottomCanvas({ width, height, onSizeChange, AppZoom }: CanvasProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function DownCanvas({ width, height, onSizeChange, AppZoom }: CanvasProps) {
+  
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
+
+  const isResizeCanvasOpen = useSelector((state: RootState) => state.popupSLice.isResizeCanvasOpen);
 
   const [inputZoom, setInputZoom] = useState(100);
   const [inpStyle, setInputStyle] = useState({ borderColor: "#749df6"})
@@ -26,7 +34,6 @@ export function BottomCanvas({ width, height, onSizeChange, AppZoom }: CanvasPro
   
   const handleMouseDown = () => {
     setDragInputZoom(true)
-
   };
 
   const handleMouseUp = () => {
@@ -36,7 +43,6 @@ export function BottomCanvas({ width, height, onSizeChange, AppZoom }: CanvasPro
   const handleMouseMove = (e: { clientX: number; clientY: number; }) => {
 
     if(!dragInputZoom) return;
-    console.log(e.clientX)
     const clientX = e.clientX;
     const ranges = [1295, 1305.5, 1330, 1347.5, 1368, 1385.5, 1405, 1425]
     const zooms = [25, 50, 75, 100, 200, 400, 800]
@@ -85,16 +91,6 @@ export function BottomCanvas({ width, height, onSizeChange, AppZoom }: CanvasPro
     setValueRange(valueRange + 1);
   };
 
-  function open() {
-    openBlock = true;
-    setIsOpen(true);
-  }
-
-  function close() {
-    openBlock = false;
-    setIsOpen(false);
-  }
-
   useEffect(() => {
     zoom = (inputZoom / 100);
     AppZoom(inputZoom)
@@ -122,17 +118,21 @@ export function BottomCanvas({ width, height, onSizeChange, AppZoom }: CanvasPro
   return (
     <>
     <div className="bottom-Bar" id="setBar">
-      <button className="button size-canvas" onClick={open}>
-        {width} <span>x</span> {height}
+      <button className="size-canvas flex_block" onClick={() => PopupStatus("size", dispatch, isResizeCanvasOpen)}>
+        <img className="img-size" src="/images/picture.svg" alt="" />
+        {width} <span>x</span> {height}px
       </button>
+
+      <span className="divider"></span>
 
       <div>
         <img className="cursor_img" src="/images/cursor3.svg" alt="Icon" width="20" height="20" />
         <span id="coordinates"></span>
       </div>
 
-      <div className="toolbox" id="zoomToolbox">
-        <input className="numberZoom" type="number" id="zoomPercent" min="1" max="999" title="Zoom level"
+      <div className="toolbox flex_block" id="zoomToolbox">
+        <div className="flex_block" style={{ gap:"0px"}}>
+          <input className="numberZoom" type="number" id="zoomPercent" min="1" max="999" title="Zoom level"
           value={inputZoom}
           onChange={(e) => setInputZoom(parseInt(e.target.value))}
           onFocus={() => setInputStyle({ borderColor: "#ffff"})}
@@ -140,6 +140,8 @@ export function BottomCanvas({ width, height, onSizeChange, AppZoom }: CanvasPro
           style={inpStyle}
         />
         <span className="icon" style={inpStyle}>%</span>
+        </div>
+
         <button 
           className="text svg_btn" 
           onMouseEnter={ZoomOutHover} 
@@ -163,10 +165,9 @@ export function BottomCanvas({ width, height, onSizeChange, AppZoom }: CanvasPro
         </button>
       </div>
     </div>
-    {isOpen && (
-      <Popup width={width} height={height} close={close} onResize={onSizeChange}/>
+    {isResizeCanvasOpen && (
+      <PopupResize width={width} height={height} close={() => PopupStatus("size", dispatch, isResizeCanvasOpen)} onResize={onSizeChange}/>
     )}
     </>
-    
   );
 }

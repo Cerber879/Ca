@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { PrintCanvas } from "./components/PrintCanvas";
-import { SetCanvas } from "./components/SetCanvas";
-import { BottomCanvas } from "./components/BottomCanvas";
+import { PrintCanvas } from "./components/canvas/PrintCanvas";
+import { SetCanvas } from "./components/topBar/SetCanvas";
+import { DownCanvas } from "./components/downBar/DownCanvas";
 import { canvas } from "./modules/data";
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
     <div style={{ top: "42px", left: "0px", width: width * (inputZoom / 100), height: height * (inputZoom / 100), overflow: "hidden", position: "relative" }}>
       <SetCanvas />
       <PrintCanvas width={width * (inputZoom / 100)} height={height * (inputZoom / 100)} canvas={canvas} />
-      <BottomCanvas
+      <DownCanvas
         width={width}
         height={height}
         onSizeChange={handleSizeChange}

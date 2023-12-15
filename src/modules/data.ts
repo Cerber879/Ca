@@ -1,5 +1,4 @@
 import {TextBlock, ImageBlock, GraphicObject, Canvas } from './types'
-import { setactiveColor, setactiveBorderColor, setactiveFont, setactiveFontFamilies } from "../components/SetCanvas";
 
 export const textBlock: TextBlock = {
   id: 0,
@@ -7,16 +6,15 @@ export const textBlock: TextBlock = {
   width: 100,
   height: 30,
   text: {
-    fontSize: setactiveFont(),
-    fontFamily: setactiveFontFamilies(),
+    fontSize: 12,
+    fontFamily: "Arial",
     fontWeight: "normal",
     fontStyle: "none",
     textDecorationLine: "none",
-    borderColor: setactiveBorderColor(),
-    color: setactiveColor(),
+    borderColor: "white",
+    color: "black",
     value: ""
   },
-  zIndex: 2,
   position: {x:0, y:0},
 };
 
@@ -26,7 +24,6 @@ export const imageBlock: ImageBlock = {
   width: 100,
   height: 100,
   imageUrl: "./images",
-  zIndex: 2,
   position: {x:0, y:0},
 };
 
@@ -35,14 +32,13 @@ export const graphicBlock: GraphicObject = {
   type: "graphic",
   width: 100,
   height: 100,
-  borderColor: setactiveBorderColor(),
-  color: setactiveColor(),
-  zIndex: 2,
+  borderColor: "white",
+  color: "black",
   position: {x:0, y:0},
 }; 
 
 export const canvas: Canvas = {
-  block: {text: textBlock , image: imageBlock , object: graphicBlock},
+  objects: [],
   backgroundColor: "white",
   select: { position: { x: 0, y: 0 }, size: { width: 800, height: 600 } },
 };

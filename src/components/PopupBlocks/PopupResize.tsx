@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { openBlock } from "./BottomCanvas"
 
 type PopupProps = {
   width: number;
@@ -8,18 +7,16 @@ type PopupProps = {
   onResize: (newWidth: number, newHeight: number) => void;
 };
 
-export function Popup({ width, height, close, onResize }: PopupProps) {
+export function PopupResize({ width, height, close, onResize }: PopupProps) {
   const [inputWidth, setInputWidth] = useState(String(width));
   const [inputHeight, setInputHeight] = useState(String(height));
 
   useEffect(() => {
-    if(openBlock) {
-      const overlay = document.getElementById("overlay") as HTMLDivElement;
-      const popup = document.getElementById("popup") as HTMLDivElement;
-      overlay.style.display = "block";
-      popup.style.display = "block";
-    };
-  })
+    const overlay = document.getElementById("overlay") as HTMLDivElement;
+    const popup = document.getElementById("popup") as HTMLDivElement;
+    overlay.style.display = "block";
+    popup.style.display = "block";
+  },[])
   
   function closePopup() {
     close();

@@ -1,25 +1,24 @@
 import { useEffect } from "react";
-import { setOpenCleaner } from "./SetCanvas"
+
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../ReduxStore";
+
+import { clearDeleteData, setDeleteData } from "../../reducers/canvas/deleteDataSlice";
 
 type PopupProps = {
   close: () => void;
 };
 
-let deleteData = "";
-
-export const deleteDisActive = () => {
-  deleteData = "";
-}
-
 export function PopupClean({ close }: PopupProps) {
 
+  const useAppDispatch = () => useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    if(setOpenCleaner()) {
-      const overlay = document.getElementById("overlay") as HTMLDivElement;
-      const popup = document.getElementById("popup") as HTMLDivElement;
-      overlay.style.display = "block";
-      popup.style.display = "block";
-    };
+    const overlay = document.getElementById("overlay") as HTMLDivElement;
+    const popup = document.getElementById("popup") as HTMLDivElement;
+    overlay.style.display = "block";
+    popup.style.display = "block";
   }, [])
   
   function closePopup() {
@@ -39,9 +38,9 @@ export function PopupClean({ close }: PopupProps) {
     const selectedOption = document.querySelector('input[name="clear"]:checked') as HTMLInputElement; 
     if (selectedOption) {
       const selectedValue = selectedOption.value; 
-      deleteData = selectedValue
+      dispatch(setDeleteData(selectedValue));
     } else {
-      deleteData = ""
+      dispatch(clearDeleteData());
     }
   }
 
@@ -85,8 +84,4 @@ export function PopupClean({ close }: PopupProps) {
     </div>
     </>
   );
-}
-
-export function getDeleteData() {
-  return deleteData;
 }
