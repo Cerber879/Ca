@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 interface penSettingsState {
   activePen: boolean;
   btnStylePen: { backgroundColor: string };
@@ -52,3 +53,32 @@ const PenSettReducer = (
 
 export { setActivePen, setBtnStylePen };
 export default PenSettReducer;
+=======
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+type drawSettingsState = {
+  activePen: boolean;
+  btnStylePen: { backgroundColor: string }
+};
+
+const initialState: drawSettingsState = {
+  activePen: false,
+  btnStylePen: { backgroundColor: "#3f51b5" }
+};
+
+const drawSettSlice = createSlice({
+  name: 'drawSett',
+  initialState,
+  reducers: {
+    setActivePen: (state, action: PayloadAction<boolean>) => {
+      state.activePen = action.payload;
+    },
+    setBtnStylePen: (state, action: PayloadAction<{ backgroundColor: string }>) => {
+      state.btnStylePen = action.payload;
+    },
+  },
+});
+
+export const { setActivePen, setBtnStylePen } = drawSettSlice.actions;
+export default drawSettSlice.reducer;
+>>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5

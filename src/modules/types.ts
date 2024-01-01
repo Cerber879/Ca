@@ -62,9 +62,16 @@ export type drawItem = {
   items: draw[];
 };
 
+<<<<<<< HEAD
 export type ObjectType = TextBlock | ImageBlock | GraphicObject;
 
 export type ObjectList = ObjectType[];
+=======
+export type ObjectType = TextBlock | ImageBlock | GraphicObject
+
+export type ObjectList = ObjectType[]
+
+>>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5
 
 export type Canvas = {
   objects: ObjectList;
