@@ -1,28 +1,34 @@
-import React, { useState } from "react";
-import { PrintCanvas } from "./components/PrintCanvas";
-import { SetCanvas } from "./components/SetCanvas";
-import { BottomCanvas } from "./components/BottomCanvas";
-import { canvas } from "./modules/data";
+import React from "react";
+import { ViewCanvas } from "./components/canvas/ViewCanvas";
+import { TopPanel } from "./components/topBar/TopPanel";
+import { DownPanel } from "./components/downBar/DownPanel";
+import { useSelector } from "react-redux";
+import { RootState } from "./ReduxStore";
 
 function App() {
-  const [width, setWidth] = useState(canvas.select.size.width);
-  const [height, setHeight] = useState(canvas.select.size.height);
-  const [inputZoom, setInputZoom] = useState(100);
-
-  const handleSizeChange = (newWidth: number, newHeight: number) => {
-    setWidth(newWidth);
-    setHeight(newHeight);
-  };
+  const width = useSelector((state: RootState) => state.size.width);
+  const height = useSelector((state: RootState) => state.size.height);
+  const zoom = useSelector((state: RootState) => state.zoom.zoom) / 100;
 
   return (
-    <div style={{ top: "42px", left: "0px", width: width * (inputZoom / 100), height: height * (inputZoom / 100), overflow: "hidden", position: "relative" }}>
-      <SetCanvas />
-      <PrintCanvas width={width * (inputZoom / 100)} height={height * (inputZoom / 100)} canvas={canvas} />
-      <BottomCanvas
+    <div
+      style={{
+        top: "42px",
+        left: "0px",
+        width: width * (zoom),
+        height: height * (zoom),
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      <TopPanel />
+      <ViewCanvas
+        width={width * (zoom)}
+        height={height * (zoom)}
+      />
+      <DownPanel
         width={width}
         height={height}
-        onSizeChange={handleSizeChange}
-        AppZoom={setInputZoom}
       />
     </div>
   );

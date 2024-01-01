@@ -35,6 +35,10 @@ body {
   border-radius: 50%;
 }
 
+.text:hover {
+  background-color: #6489ef;
+}
+
 .svg_btn {
   cursor: pointer;
   border: 0;
@@ -96,13 +100,13 @@ body {
   display: flex;
   align-items: center;
   bottom: 0;
-  height: 38px;
+  height: 34px;
   -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 4px 17px 0, rgba(0, 0, 0, 0.19) 0 2px 20px 0;
   box-shadow: rgba(0, 0, 0, 0.2) 0 4px 17px 0, rgba(0, 0, 0, 0.19) 0 2px 20px 0;
 }
 
 .toolbox {
-  margin-left: 1060px;
+  margin-left: 1008px;
 }
 
 .numberZoom {
@@ -124,6 +128,10 @@ input[type="range"] {
   border: 0px; 
 }
 
+.Slider[type="range"] {
+  accent-color: rgb(255, 255, 255);
+}
+
 .numberZoom::-webkit-inner-spin-button,
 .numberZoom::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -135,16 +143,33 @@ input[type="range"] {
   border-bottom: 1px solid;
   border-color: #749df6;
   margin-right: 10px;
-  padding-bottom: 2px;
+  padding-bottom: 1.5px;
 }
 
 .Slider {
   cursor: pointer;
 }
 
+.img-size {
+  width: 20px;
+  height: 20px;
+
+}
+
+.size-canvas:hover{
+  background-color:#3f63b1;
+}
+
 .size-canvas {
-  height: 38px;
-  margin-right: 20px;
+  font-weight: 400;
+  font-size: 15px;
+  height: 34px;
+  width: 140px;
+  background-color:#3f51b5;
+  color: #ffffff;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
 }
 
 .overlay {
@@ -161,7 +186,7 @@ input[type="range"] {
 .popup {
   display: none;
   width: 200px;
-  height: 180px;
+  height: 200px;
   position: fixed;
   border-radius: 5%;
   top: 45%;
@@ -196,6 +221,7 @@ label {
 
 input[type="radio"] {
   margin-right: 5px;
+  
 }
 
 #sizeInput {
@@ -292,6 +318,10 @@ input[type="radio"] {
   background-color: #6489ef;
 }
 
+.active:active {
+  background-color: #6583d7;
+}
+
 #fontBar {
   width: 80px;
   height: 30px;
@@ -316,14 +346,14 @@ input[type="radio"] {
 
 .fonts {
   top: 19.8%;
-  left: 44%;
+  left: 54.13%;
   overflow: auto;
   border-radius: 0%;
 }
 
 .families {
   top: 19.8%;
-  left: 52%;
+  left: 62.2%;
   overflow: auto;
   border-radius: 0%;
 }
@@ -332,7 +362,6 @@ input[type="radio"] {
   border-radius: 50%;
   width: 30px;
   height: 30px;
-  box-shadow: inset;
 }
 
 .btn-font {

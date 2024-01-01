@@ -16,25 +16,25 @@ export type Select = {
 export type Block = {
   id: number;
   position: Position;
+  active: boolean;
 };
 
- export type standartText = {
-  fontSize: number,
-  fontFamily: string,
+export type standartText = {
+  fontSize: number;
+  fontFamily: string;
   borderColor: string;
-  fontWeight: string,
-  fontStyle: string,
-  textDecorationLine: string,
-  color: string,
+  fontWeight: string;
+  fontStyle: string;
+  textDecorationLine: string;
+  color: string;
   value: string;
- }
+};
 
 export type TextBlock = Block & {
   type: string;
   width: number;
   height: number;
   text: standartText;
-  zIndex: number;
 };
 
 export type ImageBlock = Block & {
@@ -42,7 +42,6 @@ export type ImageBlock = Block & {
   width: number;
   height: number;
   imageUrl: string;
-  zIndex: number;
 };
 
 export type GraphicObject = Block & {
@@ -51,7 +50,6 @@ export type GraphicObject = Block & {
   width: number;
   height: number;
   borderColor: string;
-  zIndex: number;
 };
 
 export type draw = {
@@ -62,16 +60,14 @@ export type draw = {
 export type drawItem = {
   id: number;
   items: draw[];
-}
+};
 
-export type Content = {
-  text: TextBlock;
-  image: ImageBlock;
-  object: GraphicObject;
-}
+export type ObjectType = TextBlock | ImageBlock | GraphicObject;
+
+export type ObjectList = ObjectType[];
 
 export type Canvas = {
-  block: Content;
+  objects: ObjectList;
   backgroundColor: string;
   select: Select;
 };

@@ -1,0 +1,122 @@
+        +------------------------------+
+        |     Card Maker               |
+        +------------------------------+
+        | - history: History           |
+        | - listOfTemlates:List<Canvas>|
+        +------------------------------+
+               |
+               | 
+               |
+        +----------------------------+
+        |      History               | 
+        +----------------------------+
+        | - commands: List<Command>  |
+        +----------------------------+
+               |          
+               |             
+        +-------------------+
+        |      Command      | 
+        +-------------------+
+        | - undo(): void    |
+        | - redo(): void    |
+        +-------------------+                     
+               |                                 
+               |          
+        +-------------------------------+
+        |       Canvas                  | 
+        +-------------------------------+
+        | - backgroundColor: String     |
+        | - canvasSize: Size            |
+        | - listOfLayers: List<Layer>   |
+        | - currentSelection: Selection |
+        | - tools: List<ToolsArea>      |
+        +-------------------------------+
+               |              
+               |         
+        +----------------------+
+        |       Layer          | 
+        +----------------------+            
+        | - layerType: String  |
+        | - position: Position |
+        | - size: Size         +-------+
+        | - content: List<TextContent, |
+        | ImageContent, ArtContent>    |
+        +------------------------------+
+               |            
+               |             
+        +-------------------+
+        |      Position     | 
+        +-------------------+
+        | - x: int          |
+        | - y: int          |
+        +-------------------+
+               |           
+               |           
+        +-------------------+
+        |       Size        | 
+        +-------------------+
+        | - width: int      |
+        | - height: int     |
+        +-------------------+
+               |           
+               |           
+        +----------------------+
+        |    TextContent       |
+        +----------------------+
+        | - ID: int            |
+        | - text: String       |
+        | - textSize: int      |
+        | - textColor: String  |
+        | - position: Position |
+        +----------------------+
+               |          
+               |
+        +---------------------+
+        |  ImageContent       |
+        +---------------------+
+        | - ID: int           |
+        | - image: Image      |
+        | - position: Position|
+        | - size: Size        |
+        +---------------------+
+               |          
+               |
+        +------------------------+
+        |   ArtContent           |
+        +------------------------+
+        | - ID: int              |
+        | - artObject: ArtObject |
+        | - position: Position   |
+        | - size: Size           |
+        +------------------------+
+               |
+               |
+        +-------------------------------+
+        |           ToolsArea           |
+        +-------------------------------+
+        | - Tools: String               |
+        | - apply(canvas: Canvas): void |
+        | - apply(layer: Layer): void   |
+        +-------------------------------+
+               |
+               |
+        +-------------------------------+
+        |           Selection           |
+        +-------------------------------+
+        | - position: Position          |
+        | - size: Size                  |
+        +-------------------------------+
+               |
+               |
+       +----------------------------------+
+       |             Tools                |
+       +----------------------------------+
+       | - Selection Tool                 |
+       | - Move Selected Area Tool        |
+       | - Crop Tool                      |
+       | - Delete Selected Area Tool      |
+       | - Text Insertion Tool            |
+       | - Art Object Insertion Tool      |
+       | - Image Insertion Tool           |
+       +----------------------------------+
+		
