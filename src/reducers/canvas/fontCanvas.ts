@@ -1,4 +1,4 @@
-type fontCanvasState = {
+export type fontCanvasState = {
   width: number;
   height: number;
   filter: string;
@@ -9,7 +9,7 @@ const initialState: fontCanvasState = {
   width: 800,
   height: 600,
   filter: "#ffffff",
-  opacity: 100,
+  opacity: 0,
 };
 
 const setSize = (widht: number, height: number) => {
@@ -32,7 +32,7 @@ const setFilter = (filter: string, opacity: number) => {
   };
 };
 
-const sizeReducer = (
+const fontCanvasReducer = (
   state = initialState,
   action: { type: string; payload: fontCanvasState }
 ) => {
@@ -55,4 +55,4 @@ const sizeReducer = (
 };
 
 export { setSize, setFilter };
-export default sizeReducer;
+export default fontCanvasReducer;

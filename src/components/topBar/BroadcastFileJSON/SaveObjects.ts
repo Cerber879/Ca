@@ -1,11 +1,13 @@
 import { ObjectList } from "../../../modules/types";
 
-export function SaveToFile(objectBlocks: ObjectList, size: {width: number, height: number}) {
+export function SaveToFile(objectBlocks: ObjectList, size: {width: number, height: number}, fontCanvas: {filter: string, opacity: number}) {
   // Создать объект с массивами данных
   const data = {
     objectBlocks: objectBlocks,
     width: size.width,
     height: size.height,
+    filter: fontCanvas.filter,
+    opacity: fontCanvas.opacity
   };
 
   // Преобразуй объект в текстовый формат (JSON)

@@ -1,20 +1,24 @@
 import React, { useEffect } from "react";
-import styles from "../../../index.module.css";
+import styles from "../../../../index.module.css";
 
-import { ObjectType, GraphicObject } from "../../../modules/types";
+import { ObjectType, GraphicObject } from "../../../../modules/types";
 
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../ReduxStore";
+import { AppDispatch, RootState } from "../../../../ReduxStore";
 
-import { setDelX, setDelY, setDragging, setDraggingSize } from "../moves/moveSettings";
-import { delActiveStateObjects } from "../../StateObjects";
+import { setDelX, setDelY, setDragging } from "../../moves/moveSettings";
+import { delActiveStateObjects } from "../../../StateObjects";
 
-import { CanvasState, setHistory } from "../../canvas/history/historySettings";
-import { setObjectBlocks } from "../createBlock/appSlice";
+import { CanvasState, setHistory } from "../../history/historySettings";
+import { setObjectBlocks } from "../../createBlock/appSlice";
+import { handleChangeStyle } from "./handleCgange";
+import GraphicResize from "./ResizeGraphic";
 
 const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
+
+  const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
 
   const zoom = useSelector((state: RootState) => state.zoom.zoom) / 100;
   const elStyle = useSelector((state: RootState) => state.styleElements);
@@ -28,22 +32,8 @@ const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
   const block = object as GraphicObject;
 
   useEffect(() => {
-    if (block.active) {
-      const updatedInputBlocks = objectBlocks.map((objBlock: ObjectType) => {
-        if (objBlock.id === block.id) {
-          return {
-            ...objBlock,
-            borderColor: isActiveObjFill ? "transparent" : elStyle.activeColorBorder,
-            color: isActiveObjStroke ? "transparent" : elStyle.activeColor,
-          };
-        }
-        return objBlock;
-      });
-
-      dispatch(setObjectBlocks([...updatedInputBlocks]));
-    }
-  }, [block.active, isActiveObjFill, isActiveObjStroke, elStyle]);
-
+    handleChangeStyle(dispatch, objectBlocks, history, fontCanvas, block, elStyle, isActiveObjFill, isActiveObjStroke);
+  }, [isActiveObjFill, isActiveObjStroke, elStyle]);
 
   return (
     <>
@@ -74,6 +64,8 @@ const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
 
           const elHistory: CanvasState = {
             objects: updatedBlocks,
+            size: { width: fontCanvas.width, height: fontCanvas.height },
+            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
           };
           dispatch(setHistory([...history, elHistory]));
 
@@ -127,42 +119,7 @@ const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           </g>
         )}
       </svg>
-      { block.active &&
-        <div
-          style={{
-            zIndex: 2,
-            position: "absolute",
-            left: (block.position.x * zoom) + 2,
-            top: (block.position.y * zoom) + 2,
-            width: (block.width * zoom) - 8,
-            height: (block.height * zoom) - 8,
-            border: "2px solid blue",
-            borderRadius: '3px',
-            pointerEvents: "none",
-          }}
-        />
-      }
-      <div
-        onMouseDown={(event) => {
-          const elHistory: CanvasState = {
-            objects: objectBlocks,
-          };
-          dispatch(setHistory([...history, elHistory]));
-
-          dispatch(setDraggingSize(true));
-          block.active = true;
-          event.preventDefault();
-        }}
-        style={{
-          zIndex: 2,
-          cursor: "nwse-resize",
-          position: "absolute",
-          width: "10px",
-          height: "10px",
-          left: block.position.x + block.width * zoom - 10,
-          top: block.position.y + block.height * zoom - 10,
-        }}
-      />
+      <GraphicResize block={block}/>
     </>
   );
 };

@@ -35,7 +35,7 @@ export function TopPanel() {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
 
-  const size = useSelector((state: RootState) => state.size);
+  const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
 
   const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
   const history = useSelector((state: RootState) => state.history.history);
@@ -76,20 +76,33 @@ export function TopPanel() {
           SaveCard();}} className={`${styles.text} ${styles.svg_btn}`}>
           <img id="svg_icon_save" src="/images/save.svg" alt="Icon" width="16" height="16"/>
         </button>
-        <button onClick={() => SaveToFile(objectBlocks, { width: size.width, height: size.height })} className={`${styles.text} ${styles.svg_btn}`}>
+        <button onClick={() => SaveToFile(objectBlocks, { width: fontCanvas.width, height: fontCanvas.height },
+          { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+        )}
+        className={`${styles.text} ${styles.svg_btn}`}>
           <img id="svg_icon_save" src="/images/save_file.svg" alt="Icon" width="16" height="16"/>
         </button>
-        <button onClick={() => DownloadFile(dispatch)} className={`${styles.text} ${styles.svg_btn}`}>
+        <button onClick={() => DownloadFile(dispatch, objectBlocks, history, fontCanvas)} className={`${styles.text} ${styles.svg_btn}`}>
           <img id="svg_icon_download" src="/images/download.svg" alt="Icon" width="18" height="18"/>
         </button>
         <span className={styles.divider}></span>
         <button
-          onClick={() => ComeBack(dispatch, objectBlocks, history, prophecy)}
-          className={`${styles.text} ${styles.svg_btn}`}>
+          onClick={() => ComeBack(dispatch, objectBlocks, history, prophecy, fontCanvas)}
+          className={`${styles.text} ${styles.svg_btn}`}
+          style={{
+            opacity: history.length === 0 ? "0.5" : "1",
+            pointerEvents: history.length === 0 ? "none" : "auto",
+          }}
+        >
           <img id="svg_icon_arrow_left" src="/images/left_arrow.svg" alt="Icon" width="18" height="18"/>
         </button>
-        <button onClick={() => ComeForward(dispatch, objectBlocks, history, prophecy)}
-          className={`${styles.text} ${styles.svg_btn}`}>
+        <button onClick={() => ComeForward(dispatch, objectBlocks, history, prophecy, fontCanvas)}
+          className={`${styles.text} ${styles.svg_btn}`}
+          style={{
+            opacity: prophecy.length === 0 ? "0.5" : "1",
+            pointerEvents: prophecy.length === 0 ? "none" : "auto",
+          }}
+        >
           <img id="svg_icon_arrow_right" src="/images/right_arrow.svg" alt="Icon" width="18" height="18"/>
         </button>
         <span className={styles.divider}></span>

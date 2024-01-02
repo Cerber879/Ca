@@ -5,8 +5,8 @@ import styles from "../../index.module.css";
 import { CanvasState, setHistory } from "./history/historySettings";
 
 import InputComponent from "./objectsView/inputView/inputView";
-import ImageComponent from "./objectsView/imageView";
-import GraphicComponent from "./objectsView/graphicView";
+import ImageComponent from "./objectsView/imageView/imageView";
+import GraphicComponent from "./objectsView/graphicView/graphicView";
 
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from "../../ReduxStore";
@@ -37,8 +37,7 @@ export function ViewCanvas({ width, height }: CanvasProps) {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
   const isDelData = useSelector((state: RootState) => state.deleteData.deleteData);
-  const filterCanvas = useSelector((state: RootState) => state.size.filter);
-  const opacityCanvas = useSelector((state: RootState) => state.size.opacity);
+  const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
 
   const isActivePen = useSelector((state: RootState) => state.penSettSlice.activePen);
   const isActiveText = useSelector((state: RootState) => state.textSettSlice.activeText);
@@ -60,9 +59,9 @@ export function ViewCanvas({ width, height }: CanvasProps) {
   const isActiveObjStroke = useSelector((state: RootState) => state.objStrokeSettSlice.activeObjStroke);
 
   const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
-  const draggingSize = useSelector((state: RootState) => state.move.draggingSize);
   const history = useSelector((state: RootState) => state.history.history);
   const prophecy = useSelector((state: RootState) => state.history.prophecy);
+  const draggingSize = useSelector((state: RootState) => state.move.draggingSize);
 
   const elStyle = useSelector((state: RootState) => state.styleElements);
   const move = useSelector((state: RootState) => state.move);
@@ -71,15 +70,41 @@ export function ViewCanvas({ width, height }: CanvasProps) {
     if(isDelData === "all") {
       const elHistory: CanvasState = {
         objects: objectBlocks,
+        size: { width: fontCanvas.width, height: fontCanvas.height },
+        font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
       };
       dispatch(setHistory([...history, elHistory]));
       if(ctx !== null) ctx.clearRect(0, 0, width, height);
       dispatch(setObjectBlocks([]));
       dispatch(setDeleteData(""));
     }
-    else if (isDelData === "text") { dispatch(removeObjectBlocksByType("text")); dispatch(setDeleteData("")); }
-    else if (isDelData === "image") { dispatch(removeObjectBlocksByType("image")); dispatch(setDeleteData("")); }
+    else if (isDelData === "text") {
+      const elHistory: CanvasState = {
+        objects: objectBlocks,
+        size: { width: fontCanvas.width, height: fontCanvas.height },
+        font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+      };
+      dispatch(setHistory([...history, elHistory]));
+      dispatch(removeObjectBlocksByType("text"));
+      dispatch(setDeleteData(""));
+    }
+    else if (isDelData === "image") {
+      const elHistory: CanvasState = {
+        objects: objectBlocks,
+        size: { width: fontCanvas.width, height: fontCanvas.height },
+        font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+      };
+      dispatch(setHistory([...history, elHistory]));
+      dispatch(removeObjectBlocksByType("image"));
+      dispatch(setDeleteData(""));
+    }
     else if (isDelData === "object") {
+      const elHistory: CanvasState = {
+        objects: objectBlocks,
+        size: { width: fontCanvas.width, height: fontCanvas.height },
+        font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+      };
+      dispatch(setHistory([...history, elHistory]));
       dispatch(removeObjectBlocksByType("triangle"));
       dispatch(removeObjectBlocksByType("square"));
       dispatch(removeObjectBlocksByType("circle"));
@@ -101,7 +126,7 @@ export function ViewCanvas({ width, height }: CanvasProps) {
       deleteDuplicate(dispatch, objectBlocks, history);
       dispatch(setDrag(false));
       dispatch(setDragging(false));
-      dispatch(setDraggingSize(false));
+      dispatch(setDraggingSize(false, ""));
     };
 
     window.addEventListener("mouseup", handleMouseUp);
@@ -128,17 +153,17 @@ export function ViewCanvas({ width, height }: CanvasProps) {
     };
 
     if (isActiveText) {
-      СreateInputBlock(dispatch, updatedBlocks, history, prophecy, elStyle.activeFont, elStyle.activeFontFamily,
+      СreateInputBlock(dispatch, updatedBlocks, history, prophecy, fontCanvas, elStyle.activeFont, elStyle.activeFontFamily,
         isActiveTextBold, isActiveTextItalic, isActiveTextUnderLine, isActiveTextStrikeThrough, isActiveTransparentText,
         elStyle.activeColor, elStyle.activeColorBorder, clickedPosition
       );
     }
     else if (isActiveImage) {
-      СreateImageBlock(dispatch, updatedBlocks, history, prophecy, clickedPosition);
+      СreateImageBlock(dispatch, updatedBlocks, history, prophecy, fontCanvas, clickedPosition);
     }
     else if (activeObj) {
-      СreateObjectBlock(obj, dispatch, updatedBlocks, history, prophecy, isActiveObjFill, isActiveObjStroke, elStyle.activeColor,
-        elStyle.activeColorBorder, clickedPosition
+      СreateObjectBlock(obj, dispatch, updatedBlocks, history, prophecy, fontCanvas, isActiveObjFill, isActiveObjStroke,
+        elStyle.activeColor, elStyle.activeColorBorder, clickedPosition
       );
     } else dispatch(setObjectBlocks([...updatedBlocks]));
   };
@@ -193,19 +218,18 @@ export function ViewCanvas({ width, height }: CanvasProps) {
 
   return (
     <>
-      <div id="container" style={{ opacity: opacityCanvas / 100, width: width, height: height }}>
+      <div id="container" style={{ position: "absolute", width: width, height: height }}>
         <canvas
           id="canvas"
           className={styles.canvas}
           style={{
-            backgroundColor: filterCanvas,
-            opacity: opacityCanvas / 100,
             width: `${width}px`,
             height: `${height}px`,
-            position: "relative"
+            position: "absolute"
           }}
           onClick={handleCanvasClick}
-          onMouseEnter={handleCanvas} />
+          onMouseEnter={handleCanvas}
+        />
         {objectBlocks.map((object: ObjectType) => {
           if (object.type === 'text') {
             return <InputComponent key={object.id} object={object} />;
@@ -215,6 +239,9 @@ export function ViewCanvas({ width, height }: CanvasProps) {
             return <GraphicComponent key={object.id} object={object} />;
           }
         })}
+      </div>
+      <div style={{ zIndex: 2, position: "fixed", pointerEvents: "none", backgroundColor: fontCanvas.filter,
+        opacity: fontCanvas.opacity / 100, width: width, height: height }}>
       </div>
     </>
   );

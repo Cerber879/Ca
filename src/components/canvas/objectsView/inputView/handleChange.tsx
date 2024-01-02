@@ -4,6 +4,7 @@ import { ObjectList, TextBlock } from "../../../../modules/types";
 import { setObjectBlocks } from "../../createBlock/appSlice";
 import { CanvasState, setHistory } from "../../history/historySettings";
 import { styleElements } from "../../../../reducers/setBar/StyleElements";
+import { fontCanvasState } from "../../../../reducers/canvas/fontCanvas";
 
 export function handleChange(
   event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -35,6 +36,7 @@ export function handleChangeStyle(
   dispatch: Dispatch<AnyAction>,
   objectBlocks: ObjectList,
   history: CanvasState[],
+  fontCanvas: fontCanvasState,
   block: TextBlock,
   elStyle: styleElements,
   isActiveTextBold: boolean,
@@ -47,6 +49,8 @@ export function handleChangeStyle(
       if (inputBlock.id === block.id) {
         const elHistory: CanvasState = {
           objects: objectBlocks,
+          size: { width: fontCanvas.width, height: fontCanvas.height },
+          font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
         };
         dispatch(setHistory([...history, elHistory]));
         return {

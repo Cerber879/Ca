@@ -28,7 +28,7 @@ export function DownPanel({ width, height }: CanvasProps) {
   const isResizeCanvasOpen = useSelector((state: RootState) => state.popupSLice.isResizeCanvasOpen);
   const isFilterCanvasOpen = useSelector((state: RootState) => state.popupSLice.isFilterCanvasOpen);
 
-  const filterCanvas = useSelector((state: RootState) => state.size.filter);
+  const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
 
   const Zoom = useSelector((state: RootState) => state.zoom.zoom);
   const [inpStyle, setInputStyle] = useState({ borderColor: "#749df6" });
@@ -129,7 +129,7 @@ export function DownPanel({ width, height }: CanvasProps) {
         </button>
 
         <button className={styles.filter}
-          style={{ backgroundColor: filterCanvas }}
+          style={{ backgroundColor: fontCanvas.filter }}
           onClick={() => PopupStatus("filter", dispatch, isFilterCanvasOpen)}
         />
 

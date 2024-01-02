@@ -1,8 +1,10 @@
 import { AnyAction, Dispatch } from "redux";
+import { ObjectList } from "../../../modules/types";
 import { setObjectBlocks } from "../../canvas/createBlock/appSlice";
-import { setSize } from "../../../reducers/canvas/fontCanvas";
+import { fontCanvasState, setFilter, setSize } from "../../../reducers/canvas/fontCanvas";
+import { setHistory , CanvasState } from "../../canvas/history/historySettings";
 
-export function DownloadFile(dispatch: Dispatch<AnyAction>) {
+export function DownloadFile(dispatch: Dispatch<AnyAction>, objectBlocks: ObjectList, history: CanvasState[], fontCanvas: fontCanvasState) {
   const inputElement = document.createElement("input");
   inputElement.type = "file";
   inputElement.accept = "application/json"; // Принимаем только JSON-файлы
@@ -14,11 +16,17 @@ export function DownloadFile(dispatch: Dispatch<AnyAction>) {
       reader.onload = () => {
         const jsonData = reader.result;
         if (jsonData && typeof jsonData === "string") {
-          // Обработка загруженного JSON-файла
           try {
             const parsedData = JSON.parse(jsonData);
             dispatch(setObjectBlocks(parsedData.objectBlocks));
             dispatch(setSize(parsedData.width, parsedData.height));
+            dispatch(setFilter(parsedData.filter, parsedData.opacity));
+            const elHistory: CanvasState = {
+              objects: objectBlocks,
+              size: { width: fontCanvas.width, height: fontCanvas.height },
+              font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+            };
+            dispatch(setHistory([...history, elHistory]));
           } catch (error) {
             console.error("Ошибка в формате JSON:", error);
           }

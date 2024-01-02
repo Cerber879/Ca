@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { ObjectList, ObjectType } from "../../../modules/types";
 import { canvas } from "../../../modules/data";
 
@@ -36,27 +35,6 @@ const reducer = (
     };
   default:
     return state;
-=======
-import { ObjectList } from "../../../modules/types";
-
-interface AppState {
-  objectBlocks: ObjectList;
-}
-
-const initialState: AppState = {
-  objectBlocks: [],
-};
-
-const reducer = (state: AppState = initialState, action: { type: string; payload: AppState }) => {
-  switch (action.type) {
-    case "SET_OBJECT_BLOCKS":
-      return {
-        ...state,
-        objectBlocks: action.payload.objectBlocks,
-      };
-    default:
-      return state;
->>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5
   }
 };
 
@@ -67,7 +45,6 @@ const setObjectBlocks = (value: ObjectList) => ({
   },
 });
 
-<<<<<<< HEAD
 const removeObjectBlocksByType = (value: string) => ({
   type: "REMOVE_OBJECT_BLOCKS_BY_TYPE",
   payload: {
@@ -86,10 +63,6 @@ export {
   setObjectBlocks,
   removeObjectBlocksByType,
   removeObjectBlocksByID,
-=======
-export {
-  setObjectBlocks,
->>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5
 };
 
 export default reducer;

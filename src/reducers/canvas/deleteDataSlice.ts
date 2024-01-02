@@ -1,33 +1,20 @@
-<<<<<<< HEAD
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-=======
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
->>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5
 
 type DeleteDataState = {
   deleteData: string;
 };
 
 const initialState: DeleteDataState = {
-<<<<<<< HEAD
   deleteData: "",
 };
 
 const deleteDataReducer = createSlice({
   name: "deleteData",
-=======
-  deleteData: '',
-};
-
-const deleteDataReducer = createSlice({
-  name: 'deleteData',
->>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5
   initialState,
   reducers: {
     setDeleteData: (state, action: PayloadAction<string>) => {
       state.deleteData = action.payload;
     },
-<<<<<<< HEAD
   },
 });
 
@@ -62,13 +49,3 @@ export default deleteDataReducer.reducer;
 // export { setDeleteData };
 
 // export default deleteDataReducer;
-=======
-    clearDeleteData: (state) => {
-      state.deleteData = '';
-    },
-  },
-});
-
-export const { setDeleteData, clearDeleteData } = deleteDataReducer.actions;
-export default deleteDataReducer.reducer;
->>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5

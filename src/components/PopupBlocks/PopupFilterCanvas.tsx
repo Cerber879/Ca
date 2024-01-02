@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../index.module.css";
 
-
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../ReduxStore";
+
 import { setFilter } from "../../reducers/canvas/fontCanvas";
+import { setHistory, CanvasState } from "../canvas/history/historySettings";
 
 type PopupProps = {
   close: () => void;
@@ -14,8 +15,9 @@ export function PopupFilterCanvas({ close }: PopupProps) {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
 
-  const filterCanvas = useSelector((state: RootState) => state.size.filter);
-  const opacityCanvas = useSelector((state: RootState) => state.size.opacity);
+  const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
+  const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
+  const history = useSelector((state: RootState) => state.history.history);
 
   const [opacity, setOpacity] = useState(100);
 
@@ -28,8 +30,8 @@ export function PopupFilterCanvas({ close }: PopupProps) {
     const colorPicker = document.getElementById('color-picker') as HTMLInputElement;
     const opacity = document.querySelector(".opacity-range") as HTMLInputElement;
 
-    opacity.value = opacityCanvas.toString();
-    colorPicker.value = filterCanvas;
+    opacity.value = fontCanvas.opacity.toString();
+    colorPicker.value = fontCanvas.filter;
 
   }, []);
 
@@ -44,6 +46,13 @@ export function PopupFilterCanvas({ close }: PopupProps) {
   function CleanCanvas() {
     const colorPicker = document.getElementById('color-picker') as HTMLInputElement;
     const opacity = document.querySelector(".opacity-range") as HTMLInputElement;
+
+    const elHistory: CanvasState = {
+      objects: objectBlocks,
+      size: { width: fontCanvas.width, height: fontCanvas.height },
+      font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+    };
+    dispatch(setHistory([...history, elHistory]));
 
     if(colorPicker && opacity) {
       dispatch(setFilter(colorPicker.value, parseInt(opacity.value)));

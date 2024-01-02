@@ -1,21 +1,23 @@
 import React from "react";
-import styles from "../../../index.module.css";
+import styles from "../../../../index.module.css";
 
-import { ObjectType, ImageBlock } from "../../../modules/types";
+import { ObjectType, ImageBlock } from "../../../../modules/types";
 
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../ReduxStore";
+import { AppDispatch, RootState } from "../../../../ReduxStore";
 
-import { setDelX, setDelY, setDragging, setDraggingSize } from "../moves/moveSettings";
-import { delActiveStateObjects } from "../../StateObjects";
+import { setDelX, setDelY, setDragging } from "../../moves/moveSettings";
+import { delActiveStateObjects } from "../../../StateObjects";
 
-import { CanvasState, setHistory } from "../../canvas/history/historySettings";
-import { setObjectBlocks } from "../createBlock/appSlice";
+import { CanvasState, setHistory } from "../../history/historySettings";
+import { setObjectBlocks } from "../../createBlock/appSlice";
+import ImageResize from "./ResizeImage";
 
 const ImageComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
   const useAppDispatch = () => useDispatch<AppDispatch>();
   const dispatch = useAppDispatch();
 
+  const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
   const history = useSelector((state: RootState) => state.history.history);
   const zoom = useSelector((state: RootState) => state.zoom.zoom) / 100;
   const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
@@ -53,6 +55,8 @@ const ImageComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
 
           const elHistory: CanvasState = {
             objects: updatedBlocks,
+            size: { width: fontCanvas.width, height: fontCanvas.height },
+            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
           };
           dispatch(setHistory([...history, elHistory]));
 
@@ -61,42 +65,7 @@ const ImageComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           dispatch(setDelY(e.clientY - block.position.y));
         }}
       />
-      { block.active &&
-        <div
-          style={{
-            zIndex: 2,
-            position: "absolute",
-            left: block.position.x * zoom,
-            top: block.position.y * zoom,
-            width: (block.width * zoom) - 2,
-            height: (block.height * zoom) - 2,
-            border: "2px solid blue",
-            borderRadius: '3px',
-            pointerEvents: "none",
-          }}
-        />
-      }
-      <div
-        onMouseDown={(event) => {
-          const elHistory: CanvasState = {
-            objects: objectBlocks,
-          };
-          dispatch(setHistory([...history, elHistory]));
-
-          dispatch(setDraggingSize(true));
-          block.active = true;
-          event.preventDefault();
-        }}
-        style={{
-          zIndex: 2,
-          cursor: "nwse-resize",
-          position: "absolute",
-          width: "10px",
-          height: "10px",
-          left: block.position.x + block.width * zoom - 10,
-          top: block.position.y + block.height * zoom - 10,
-        }}
-      />
+      <ImageResize block={block}/>
     </>
   );
 };

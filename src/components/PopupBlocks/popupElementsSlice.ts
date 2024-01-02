@@ -4,10 +4,7 @@ type PopupsState = {
   isFontFamiliesOpen: boolean;
   isColorsOpen: boolean;
   isResizeCanvasOpen: boolean;
-<<<<<<< HEAD
   isFilterCanvasOpen: boolean;
-=======
->>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5
 };
 
 const initialState: PopupsState = {
@@ -16,10 +13,7 @@ const initialState: PopupsState = {
   isFontFamiliesOpen: false,
   isColorsOpen: false,
   isResizeCanvasOpen: false,
-<<<<<<< HEAD
   isFilterCanvasOpen: false
-=======
->>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5
 };
 
 const setIsCleanerOpen = (value: boolean) => ({
@@ -57,7 +51,6 @@ const setIsResizeCanvasOpen = (value: boolean) => ({
   },
 });
 
-<<<<<<< HEAD
 const setIsFilterCanvasOpen = (value: boolean) => ({
   type: "SET_IS_FILTER_CANVAS_OPEN",
   payload: {
@@ -114,39 +107,3 @@ export {
   setIsFilterCanvasOpen
 };
 export default popupElementsReducer;
-=======
-const popupElementsReducer = (state = initialState, action: { type: string; payload: PopupsState; }) => {
-  switch (action.type) {
-    case "SET_IS_CLEANER_OPEN":
-      return {
-        ...state,
-        isCleaneerOpen: action.payload.isCleaneerOpen,
-      };
-    case "SET_IS_FONT_SIZES_OPEN":
-      return {
-        ...state,
-        isFontSizesOpen: action.payload.isFontSizesOpen,
-      };
-    case "SET_IS_FONT_FAMILIES_OPEN":
-      return {
-        ...state,
-        isFontFamiliesOpen: action.payload.isFontFamiliesOpen,
-      };
-    case "SET_IS_COLORS_OPEN":
-      return {
-        ...state,
-        isColorsOpen: action.payload.isColorsOpen,
-      };
-    case "SET_IS_RESIZE_CANVAS_OPEN":
-      return {
-        ...state,
-        isResizeCanvasOpen: action.payload.isResizeCanvasOpen,
-      };
-    default:
-      return state;
-  }
-};
-
-export { setIsCleanerOpen, setIsFontSizesOpen, setIsFontFamiliesOpen, setIsColorsOpen, setIsResizeCanvasOpen };
-export default popupElementsReducer;
->>>>>>> 1f6e83e1e21e19c58527c77695a6b65e6ccadfb5

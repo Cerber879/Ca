@@ -1,4 +1,5 @@
 import { ObjectList } from "../../../modules/types";
+import { fontCanvasState, setFilter, setSize } from "../../../reducers/canvas/fontCanvas";
 import { setObjectBlocks } from "../createBlock/appSlice";
 import { setHistory, CanvasState, setProphecy } from "./historySettings";
 import { AnyAction, Dispatch } from "redux";
@@ -8,16 +9,20 @@ export function ComeBack(
   objectBlocks: ObjectList,
   history: CanvasState[],
   prophecy: CanvasState[],
+  fontCanvas: fontCanvasState,
 ) {
 
   const lastHistoryState = history.pop();
   dispatch(setHistory([...history]));
   if (lastHistoryState) {
-    const objects = lastHistoryState.objects;
-    dispatch(setObjectBlocks(objects));
+    dispatch(setObjectBlocks(lastHistoryState.objects));
+    dispatch(setSize(lastHistoryState.size.width, lastHistoryState.size.height));
+    dispatch(setFilter(lastHistoryState.font.filter, lastHistoryState.font.opacity));
 
     const elHistory: CanvasState = {
       objects: objectBlocks,
+      size: { width: fontCanvas.width, height: fontCanvas.height },
+      font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
     };
     dispatch(setProphecy([...prophecy, elHistory]));
   }
@@ -27,26 +32,29 @@ export function ComeForward(
   dispatch: Dispatch<AnyAction>,
   objectBlocks: ObjectList,
   history: CanvasState[],
-  prophecy: CanvasState[]
+  prophecy: CanvasState[],
+  fontCanvas: fontCanvasState
 ) {
   const lastProphecyState = prophecy.pop();
   dispatch(setProphecy([...prophecy]));
   if (lastProphecyState) {
-    const objects = lastProphecyState.objects;
-    dispatch(setObjectBlocks(objects));
+    dispatch(setObjectBlocks(lastProphecyState.objects));
+    dispatch(setSize(lastProphecyState.size.width, lastProphecyState.size.height));
+    dispatch(setFilter(lastProphecyState.font.filter, lastProphecyState.font.opacity));
 
     const elHistory: CanvasState = {
       objects: objectBlocks,
+      size: { width: fontCanvas.width, height: fontCanvas.height },
+      font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
     };
     dispatch(setHistory([...history, elHistory]));
   }
 }
 
 export function deleteDuplicate(dispatch: Dispatch<AnyAction>, objectBlocks: ObjectList, history: CanvasState[]) {
-  if (objectBlocks && history && history.length > 0 && history[history.length - 1].objects) {
+  if ( objectBlocks.length <= 0 || history.length <= 0 ) { /* empty */ }
+  else if (objectBlocks && history && history.length > 0 && history[history.length - 1].objects) {
     if (objectBlocks[objectBlocks.length - 1] === history[history.length - 1].objects[history[history.length - 1].objects.length - 1]) {
-      console.log(objectBlocks[objectBlocks.length - 1]);
-      console.log(history[history.length - 1].objects[history[history.length - 1].objects.length - 1]);
       history.pop();
       dispatch(setHistory([...history]));
     }
