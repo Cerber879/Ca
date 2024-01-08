@@ -1,0 +1,57 @@
+.flex_block {
+    display: flex;
+    flex-direction: none;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.divider {
+    width: 1px;
+    background-color: #e5e5e5;
+    height: 15px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.fontBar {
+width: 80px;
+height: 30px;
+background-color: #3f51b5;
+border-radius: 5%;
+border: none;
+cursor: pointer;
+padding-right: 30px;
+padding-left: 30px;
+}
+
+.fontBar:hover {
+background-color: #6489ef;
+}
+
+.fontSize {
+color: white;
+font-size: 15px;
+font-family: "Times New Roman", Times, serif;
+margin-right: 5px;
+}
+
+.fonts {
+top: 19.8%;
+left: 55.7%;
+overflow: auto;
+border-radius: 0%;
+width: 80px;
+height: 215px;
+padding: 0;
+}
+
+.families {
+top: 19.8%;
+left: 63.75%;
+overflow: auto;
+border-radius: 0%;
+width: 140px;
+height: 215px;
+padding: 0;
+}

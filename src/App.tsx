@@ -15,21 +15,15 @@ function App() {
       style={{
         top: "42px",
         left: "0px",
-        width: width * (zoom),
-        height: height * (zoom),
+        width: width * zoom,
+        height: height * zoom,
         overflow: "hidden",
         position: "relative",
       }}
     >
       <TopPanel />
-      <ViewCanvas
-        width={width * (zoom)}
-        height={height * (zoom)}
-      />
-      <DownPanel
-        width={width}
-        height={height}
-      />
+      <ViewCanvas width={width * zoom} height={height * zoom} />
+      <DownPanel />
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import React from "react";
-import styles from "../../../../index.module.css";
+import styles from "../objects.module.css";
 
 import { ObjectType, ImageBlock } from "../../../../modules/types";
 
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../../ReduxStore";
+import { RootState } from "../../../../ReduxStore";
 
 import { setDelX, setDelY, setDragging } from "../../moves/moveSettings";
 import { delActiveStateObjects } from "../../../StateObjects";
@@ -14,13 +14,14 @@ import { setObjectBlocks } from "../../createBlock/appSlice";
 import ImageResize from "./ResizeImage";
 
 const ImageComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
-  const useAppDispatch = () => useDispatch<AppDispatch>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
   const history = useSelector((state: RootState) => state.history.history);
   const zoom = useSelector((state: RootState) => state.zoom.zoom) / 100;
-  const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
+  const objectBlocks = useSelector(
+    (state: RootState) => state.app.objectBlocks
+  );
   const block = object as ImageBlock;
 
   return (
@@ -56,7 +57,7 @@ const ImageComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           const elHistory: CanvasState = {
             objects: updatedBlocks,
             size: { width: fontCanvas.width, height: fontCanvas.height },
-            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
           };
           dispatch(setHistory([...history, elHistory]));
 
@@ -65,7 +66,7 @@ const ImageComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           dispatch(setDelY(e.clientY - block.position.y));
         }}
       />
-      <ImageResize block={block}/>
+      <ImageResize block={block} />
     </>
   );
 };

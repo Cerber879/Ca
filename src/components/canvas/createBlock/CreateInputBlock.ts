@@ -3,7 +3,11 @@ import { TextBlock, Position, ObjectList } from "../../../modules/types";
 import { textBlock } from "../../../modules/data";
 
 import { setObjectBlocks } from "./appSlice";
-import { setHistory, setProphecy, CanvasState } from "../history/historySettings";
+import {
+  setHistory,
+  setProphecy,
+  CanvasState,
+} from "../history/historySettings";
 import { fontCanvasState } from "../../../reducers/canvas/fontCanvas";
 
 export function СreateInputBlock(
@@ -26,7 +30,7 @@ export function СreateInputBlock(
   const elHistory: CanvasState = {
     objects: objectBlocks,
     size: { width: fontCanvas.width, height: fontCanvas.height },
-    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
   };
   dispatch(setHistory([...history, elHistory]));
   const inputBlock: TextBlock = {

@@ -3,7 +3,11 @@ import { graphicBlock } from "../../../modules/data";
 
 import { setObjectBlocks } from "./appSlice";
 import { AnyAction, Dispatch } from "redux";
-import { setHistory, setProphecy, CanvasState } from "../history/historySettings";
+import {
+  setHistory,
+  setProphecy,
+  CanvasState,
+} from "../history/historySettings";
 import { fontCanvasState } from "../../../reducers/canvas/fontCanvas";
 
 export function СreateObjectBlock(
@@ -22,7 +26,7 @@ export function СreateObjectBlock(
   const elHistory: CanvasState = {
     objects: objectBlocks,
     size: { width: fontCanvas.width, height: fontCanvas.height },
-    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
   };
   dispatch(setHistory([...history, elHistory]));
   switch (obj) {

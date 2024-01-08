@@ -6,7 +6,7 @@ import { AnyAction, Dispatch } from "redux";
 export function MoveStatus(
   dispatch: Dispatch<AnyAction>,
   objectBlocks: ObjectList,
-  move: moveSettingsState,
+  move: moveSettingsState
 ) {
   if (!move.dragging) {
     return;

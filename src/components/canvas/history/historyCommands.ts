@@ -15,6 +15,7 @@ export function ComeBack(
   const lastHistoryState = history.pop();
   dispatch(setHistory([...history]));
   if (lastHistoryState) {
+
     dispatch(setObjectBlocks(lastHistoryState.objects));
     dispatch(setSize(lastHistoryState.size.width, lastHistoryState.size.height));
     dispatch(setFilter(lastHistoryState.font.filter, lastHistoryState.font.opacity));
@@ -38,6 +39,7 @@ export function ComeForward(
   const lastProphecyState = prophecy.pop();
   dispatch(setProphecy([...prophecy]));
   if (lastProphecyState) {
+
     dispatch(setObjectBlocks(lastProphecyState.objects));
     dispatch(setSize(lastProphecyState.size.width, lastProphecyState.size.height));
     dispatch(setFilter(lastProphecyState.font.filter, lastProphecyState.font.opacity));
@@ -54,7 +56,7 @@ export function ComeForward(
 export function deleteDuplicate(dispatch: Dispatch<AnyAction>, objectBlocks: ObjectList, history: CanvasState[]) {
   if ( objectBlocks.length <= 0 || history.length <= 0 ) { /* empty */ }
   else if (objectBlocks && history && history.length > 0 && history[history.length - 1].objects) {
-    if (objectBlocks[objectBlocks.length - 1] === history[history.length - 1].objects[history[history.length - 1].objects.length - 1]) {
+    if (objectBlocks === history[history.length - 1].objects) {
       history.pop();
       dispatch(setHistory([...history]));
     }

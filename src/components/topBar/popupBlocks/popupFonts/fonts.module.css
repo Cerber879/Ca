@@ -1,0 +1,21 @@
+.fonts {
+    top: 19.8%;
+    left: 53.5%;
+    overflow: auto;
+    border-radius: 0%;
+    width: 80px;
+    height: 215px;
+    padding: 0;
+}
+
+.btnFont {
+    width: 62px;
+    height: 22px;
+    cursor: pointer;
+    border: 0;
+}
+  
+.btnFont:hover {
+    color: #ffffff;
+    background-color: #3e67d7;
+}

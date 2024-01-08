@@ -1,0 +1,15 @@
+.inputBlock {
+    position: absolute;
+    border: 0px;
+    z-index: 2;
+    cursor: auto;
+}
+  
+.inputBlock:hover {
+    border: 1px solid black;
+}
+
+.imageBlock {
+    position: absolute;
+    z-index: 2;
+}

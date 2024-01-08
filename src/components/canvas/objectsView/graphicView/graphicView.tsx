@@ -1,22 +1,23 @@
 import React, { useEffect } from "react";
-import styles from "../../../../index.module.css";
+import styles from "../objects.module.css";
 
 import { ObjectType, GraphicObject } from "../../../../modules/types";
 
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../../ReduxStore";
+import { RootState } from "../../../../ReduxStore";
 
 import { setDelX, setDelY, setDragging } from "../../moves/moveSettings";
 import { delActiveStateObjects } from "../../../StateObjects";
 
 import { CanvasState, setHistory } from "../../history/historySettings";
 import { setObjectBlocks } from "../../createBlock/appSlice";
-import { handleChangeStyle } from "./handleCgange";
+import { handleChangeStyle } from "./handleChange";
+import { SetStyleActiveObj } from "../../../topBar/viewButtonsObject/ObjectDecoration/setStyleActiveObj";
+
 import GraphicResize from "./ResizeGraphic";
 
 const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
-  const useAppDispatch = () => useDispatch<AppDispatch>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
 
@@ -26,8 +27,9 @@ const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
   const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
   const history = useSelector((state: RootState) => state.history.history);
 
-  const isActiveObjFill = useSelector((state: RootState) => state.objFillSettSlice.activeObjFill);
   const isActiveObjStroke = useSelector((state: RootState) => state.objStrokeSettSlice.activeObjStroke);
+  const isActiveObjFill = useSelector((state: RootState) => state.objFillSettSlice.activeObjFill);
+  const isActiveObjStrokeFill = useSelector((state: RootState) => state.objStrokeFillSettSlice.activeObjStrokeFill);
 
   const block = object as GraphicObject;
 
@@ -57,6 +59,7 @@ const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
         onMouseDown={(e) => {
           let updatedBlocks = objectBlocks;
           if (!block.active) {
+            SetStyleActiveObj(block, dispatch, isActiveObjStroke, isActiveObjFill, isActiveObjStrokeFill);
             updatedBlocks = delActiveStateObjects(objectBlocks);
             updatedBlocks[block.id - 1].active = true;
             dispatch(setObjectBlocks(updatedBlocks));

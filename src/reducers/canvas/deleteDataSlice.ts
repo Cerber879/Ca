@@ -1,51 +1,35 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-type DeleteDataState = {
+type deleteDataState = {
   deleteData: string;
-};
+}
 
-const initialState: DeleteDataState = {
+const initialState: deleteDataState = {
   deleteData: "",
 };
 
-const deleteDataReducer = createSlice({
-  name: "deleteData",
-  initialState,
-  reducers: {
-    setDeleteData: (state, action: PayloadAction<string>) => {
-      state.deleteData = action.payload;
+const setDeleteData = (value: string) => {
+  return {
+    type: "SET_DELETE_DATA",
+    payload: {
+      deleteData: value,
     },
-  },
-});
+  };
+};
 
-export const { setDeleteData } = deleteDataReducer.actions;
-export default deleteDataReducer.reducer;
+const deleteDataReducer = (
+  state: deleteDataState = initialState,
+  action: { type: string; payload: deleteDataState }
+) => {
+  switch (action.type) {
+  case "SET_DELETE_DATA":
+    return {
+      ...state,
+      deleteData: action.payload.deleteData,
+    };
+  default:
+    return state;
+  }
+};
 
-// const initialState = {
-//   deleteData: '',
-// };
+export { setDeleteData };
 
-// const setDeleteData = (value: string) => {
-//   return {
-//     type: 'SET_DELETE_DATA',
-//     payload: {
-//       deleteData: value,
-//     },
-//   };
-// };
-
-// const deleteDataReducer = (state = initialState, action: { type: string; payload: string; }) => {
-//   switch (action.type) {
-//   case 'SET_DELETE_DATA':
-//     return {
-
-//       deleteData: action.payload,
-//     };
-//   default:
-//     return state;
-//   }
-// };
-
-// export { setDeleteData };
-
-// export default deleteDataReducer;
+export default deleteDataReducer;

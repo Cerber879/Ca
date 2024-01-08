@@ -1,36 +1,25 @@
-{ 
-    "extends": [
-        "stylelint-config-standard"
-    ],
-    "plugins":[
-        "stylelint-order",
-        "stylelint-prettier"
-    ],
-    "rules": {
-        "block-no-empty": true,
-        "color-no-invalid-hex": true,
-        "declaration-colon-space-after": "always",
-        "declaration-colon-space-before": "never",
-        "function-comma-space-after": "always",
-        "indentation": 2,
-        "max-empty-lines": 2,
-        "no-duplicate-selectors": true,
-        "selector-class-pattern": null,
-        "no-extra-semicolons": true,
-        "property-no-unknown": true,
-        "selector-pseudo-class-no-unknown": true,
-        "selector-pseudo-element-no-unknown": true,
-        "selector-type-no-unknown": true,
-        "string-quotes": "double",
-        "value-no-vendor-prefix": true,
-        "order/order": [
-            "custom-properties",
-            "declarations"
-          ],
-          "order/properties-order": [
-            "width",
-            "height"
-          ],
-          "prettier/prettier": true        
-    }
+{
+  "extends": ["stylelint-config-standard"],
+  "plugins": ["stylelint-order", "stylelint-prettier"],
+  "rules": {
+    "block-no-empty": true,
+    "color-no-invalid-hex": true,
+    "declaration-colon-space-after": "always",
+    "declaration-colon-space-before": "never",
+    "function-comma-space-after": "always",
+    "indentation": 2,
+    "max-empty-lines": 2,
+    "no-duplicate-selectors": true,
+    "selector-class-pattern": null,
+    "no-extra-semicolons": true,
+    "property-no-unknown": true,
+    "selector-pseudo-class-no-unknown": true,
+    "selector-pseudo-element-no-unknown": true,
+    "selector-type-no-unknown": true,
+    "string-quotes": "double",
+    "value-no-vendor-prefix": true,
+    "order/order": ["custom-properties", "declarations"],
+    "order/properties-order": ["width", "height"],
+    "prettier/prettier": true
+  }
 }

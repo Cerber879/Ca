@@ -1,5 +1,5 @@
 export interface moveSettingsState {
-  mousePosition: {x: number; y: number};
+  mousePosition: { x: number; y: number };
   drag: boolean;
   dragging: boolean;
   draggingSize: boolean;
@@ -83,7 +83,7 @@ const moveReducer = (
     return {
       ...state,
       draggingSize: action.payload.draggingSize,
-      resizeDirection: action.payload.resizeDirection
+      resizeDirection: action.payload.resizeDirection,
     };
   case "SET_DEL_X":
     return {

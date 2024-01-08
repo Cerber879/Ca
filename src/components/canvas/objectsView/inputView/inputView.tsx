@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
-import styles from "../../../../index.module.css";
+import styles from "../objects.module.css";
 
 import { ObjectType, TextBlock } from "../../../../modules/types";
 
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../../../ReduxStore";
+import { RootState } from "../../../../ReduxStore";
 
 import { setDelX, setDelY, setDragging } from "../../moves/moveSettings";
 import { delActiveStateObjects } from "../../../StateObjects";
@@ -13,25 +13,40 @@ import { CanvasState, setHistory } from "../../history/historySettings";
 
 import { handleChange, handleChangeStyle } from "./handleChange";
 import { setObjectBlocks } from "../../createBlock/appSlice";
+import { setStyleActiveText } from "../../../topBar/viewButtonsText/TextDecoration/setStyleActiveText";
 import InputResizeAtActive from "./ResizeInputAtActive";
 
 const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
-  const useAppDispatch = () => useDispatch<AppDispatch>();
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
   const history = useSelector((state: RootState) => state.history.history);
 
-  const inputRefs: React.MutableRefObject<(HTMLInputElement | HTMLTextAreaElement)[]> = useRef([]);
+  const inputRefs: React.MutableRefObject<
+    (HTMLInputElement | HTMLTextAreaElement)[]
+  > = useRef([]);
 
-  const isActiveTransparentText = useSelector((state: RootState) => state.textTransparentSlice.activeTextTransparent);
+  const isActiveTransparentText = useSelector(
+    (state: RootState) => state.textTransparentSlice.activeTextTransparent
+  );
 
-  const isActiveTextBold = useSelector((state: RootState) => state.textBoldSettSlice.activeTextBold);
-  const isActiveTextItalic = useSelector((state: RootState) => state.textItalicSettSlice.activeTextItalic);
-  const isActiveTextUnderLine = useSelector((state: RootState) => state.textUnderLineSettSlice.activeTextUnderLine);
-  const isActiveTextStrikeThrough = useSelector((state: RootState) => state.textStrikeThroughSettSlice.activeTextStrikeThrough);
+  const isActiveTextBold = useSelector(
+    (state: RootState) => state.textBoldSettSlice.activeTextBold
+  );
+  const isActiveTextItalic = useSelector(
+    (state: RootState) => state.textItalicSettSlice.activeTextItalic
+  );
+  const isActiveTextUnderLine = useSelector(
+    (state: RootState) => state.textUnderLineSettSlice.activeTextUnderLine
+  );
+  const isActiveTextStrikeThrough = useSelector(
+    (state: RootState) =>
+      state.textStrikeThroughSettSlice.activeTextStrikeThrough
+  );
 
-  const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
+  const objectBlocks = useSelector(
+    (state: RootState) => state.app.objectBlocks
+  );
 
   const zoom = useSelector((state: RootState) => state.zoom.zoom) / 100;
   const elStyle = useSelector((state: RootState) => state.styleElements);
@@ -45,22 +60,37 @@ const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
   }, [objectBlocks.length]);
 
   useEffect(() => {
-    handleChangeStyle(dispatch, objectBlocks, history, fontCanvas, block, elStyle, isActiveTextBold,
-      isActiveTextItalic, isActiveTextUnderLine, isActiveTextStrikeThrough, isActiveTransparentText
+    handleChangeStyle(
+      dispatch,
+      objectBlocks,
+      history,
+      fontCanvas,
+      block,
+      elStyle,
+      isActiveTextBold,
+      isActiveTextItalic,
+      isActiveTextUnderLine,
+      isActiveTextStrikeThrough,
+      isActiveTransparentText
     );
-  }, [elStyle, isActiveTextBold, isActiveTextItalic, isActiveTextUnderLine,
-    isActiveTextStrikeThrough, isActiveTransparentText]
-  );
+  }, [
+    elStyle,
+    isActiveTextBold,
+    isActiveTextItalic,
+    isActiveTextUnderLine,
+    isActiveTextStrikeThrough,
+    isActiveTransparentText,
+  ]);
 
-  const handleMouseClickFocus = (event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>, index: number) => {
+  const handleMouseClickFocus = (
+    event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>,
+    index: number
+  ) => {
     event.preventDefault();
     const targetInput = inputRefs.current[index];
     if (targetInput && document.activeElement !== targetInput) {
       targetInput.focus();
     }
-    handleChangeStyle(dispatch, objectBlocks, history, fontCanvas, block, elStyle, isActiveTextBold,
-      isActiveTextItalic, isActiveTextUnderLine, isActiveTextStrikeThrough, isActiveTransparentText
-    );
   };
 
   return (
@@ -71,7 +101,7 @@ const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
         key={block.id}
         value={block.text.value}
         style={{
-          userSelect: 'none',
+          userSelect: "none",
           width: block.width * zoom,
           height: block.height * zoom,
           fontSize: block.text.fontSize * zoom,
@@ -84,26 +114,30 @@ const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           left: block.position.x * zoom,
           top: block.position.y * zoom,
           background: block.text.borderColor,
-          border: 'none',
-          outline: 'none',
-          boxShadow: 'none',
-          resize: 'none',
-          overflow: 'hidden',
-          appearance: 'none',
+          border: "none",
+          outline: "none",
+          boxShadow: "none",
+          resize: "none",
+          overflow: "hidden",
+          appearance: "none",
           padding: 0,
         }}
-        ref={(el) => { if (el) inputRefs.current[block.id] = el;}}
-        onClick={(event) => {
-          handleMouseClickFocus(event, block.id);
+        ref={(el) => {
+          if (el) inputRefs.current[block.id] = el;
+        }}
+        onClick={() => {
           if (!block.active) {
+            setStyleActiveText(block, dispatch);
             const updatedBlocks = delActiveStateObjects(objectBlocks);
             updatedBlocks[block.id - 1].active = true;
             dispatch(setObjectBlocks(updatedBlocks));
           }
         }}
         onMouseDown={(e) => {
+          handleMouseClickFocus(e, block.id);
           let updatedBlocks = objectBlocks;
           if (!block.active) {
+            setStyleActiveText(block, dispatch);
             updatedBlocks = delActiveStateObjects(objectBlocks);
             updatedBlocks[block.id - 1].active = true;
             dispatch(setObjectBlocks(updatedBlocks));
@@ -112,7 +146,7 @@ const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           const elHistory: CanvasState = {
             objects: updatedBlocks,
             size: { width: fontCanvas.width, height: fontCanvas.height },
-            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
           };
           dispatch(setHistory([...history, elHistory]));
 
@@ -121,11 +155,11 @@ const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           dispatch(setDelY(e.clientY - block.position.y));
           e.preventDefault();
         }}
-        onChange={(event) => handleChange(event, dispatch, objectBlocks, history, block)}
+        onChange={(event) =>
+          handleChange(event, dispatch, objectBlocks, history, block)
+        }
       />
-      {block.active &&
-        <InputResizeAtActive block={block}/>
-      }
+      {block.active && <InputResizeAtActive block={block} />}
     </>
   );
 };

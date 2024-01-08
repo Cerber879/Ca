@@ -2,8 +2,8 @@ import { ObjectList } from "../../../modules/types";
 
 export type CanvasState = {
   objects: ObjectList;
-  size: { width: number, height: number };
-  font: { filter: string, opacity: number };
+  size: { width: number; height: number };
+  font: { filter: string; opacity: number };
 };
 
 interface AppState {

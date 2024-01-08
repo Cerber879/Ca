@@ -5,7 +5,7 @@ type AppState = {
   objectBlocks: ObjectList;
   type: string;
   id: number;
-}
+};
 
 const initialState: AppState = {
   objectBlocks: canvas.objects,
@@ -23,15 +23,32 @@ const reducer = (
       ...state,
       objectBlocks: action.payload.objectBlocks,
     };
+  case "SET_ID_OBJECT_BLOCKS":
+    return {
+      ...state,
+      objectBlocks: state.objectBlocks.map((block: ObjectType) => {
+        if (block.id > action.payload.id) {
+          return {
+            ...block,
+            id: block.id - 1,
+          };
+        }
+        return block;
+      }),
+    };
   case "REMOVE_OBJECT_BLOCKS_BY_TYPE":
     return {
       ...state,
-      objectBlocks: state.objectBlocks.filter((block: ObjectType) => block.type !== action.payload.type),
+      objectBlocks: state.objectBlocks.filter(
+        (block: ObjectType) => block.type !== action.payload.type
+      ),
     };
   case "SET_OBJECT_BLOCKS_BY_ID":
     return {
       ...state,
-      objectBlocks: state.objectBlocks.filter((block: ObjectType) => block.id > action.payload.id),
+      objectBlocks: state.objectBlocks.filter(
+        (block: ObjectType) => block.id > action.payload.id
+      ),
     };
   default:
     return state;
@@ -59,10 +76,6 @@ const removeObjectBlocksByID = (value: number) => ({
   },
 });
 
-export {
-  setObjectBlocks,
-  removeObjectBlocksByType,
-  removeObjectBlocksByID,
-};
+export { setObjectBlocks, removeObjectBlocksByType, removeObjectBlocksByID };
 
 export default reducer;

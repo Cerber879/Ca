@@ -1,6 +1,10 @@
 import { Position, ImageBlock, ObjectList } from "../../../modules/types";
 import { fontCanvasState } from "../../../reducers/canvas/fontCanvas";
-import { setHistory, setProphecy, CanvasState } from "../history/historySettings";
+import {
+  setHistory,
+  setProphecy,
+  CanvasState,
+} from "../history/historySettings";
 
 import { setObjectBlocks } from "./appSlice";
 import { AnyAction, Dispatch } from "redux";
@@ -16,7 +20,7 @@ export function СreateImageBlock(
   const elHistory: CanvasState = {
     objects: objectBlocks,
     size: { width: fontCanvas.width, height: fontCanvas.height },
-    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
   };
   dispatch(setHistory([...history, elHistory]));
   const inputElement = document.createElement("input");

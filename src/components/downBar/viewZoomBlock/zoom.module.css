@@ -1,0 +1,68 @@
+.flex_block {
+    display: flex;
+    flex-direction: none;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.text {
+    background-color: #3f51b5;
+    border-radius: 50%;
+}
+
+.text:hover {
+    background-color: #6489ef;
+}
+
+.text:active {
+    background-color: #6583d7;
+}
+
+.svg_btn {
+    cursor: pointer;
+    border: 0;
+    padding-top: 5px;
+}
+  
+.toolbox {
+    position: absolute;
+    margin-left: 1200px;
+}
+
+.numberZoom {
+    text-align: right;
+    padding: 0;
+    width: 30px;
+    height: 20px;
+    color: white;
+    font-size: 16px;
+    background-color: #3f51b5;
+    border: none;
+    border-bottom: 1px solid;
+    outline: none;
+    appearance: none;
+}
+
+
+.numberZoom::-webkit-inner-spin-button,
+.numberZoom::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.icon {
+    color: white;
+    border-bottom: 1px solid;
+    border-color: #749df6;
+    margin-right: 10px;
+    padding-bottom: 1.5px;
+}
+
+.Slider {
+    cursor: pointer;
+}
+
+.Slider[type="range"] {
+    accent-color: rgb(255, 255, 255);
+}

@@ -1,0 +1,22 @@
+.families {
+    top: 19.8%;
+    left: 61.6%;
+    overflow: auto;
+    border-radius: 0%;
+    width: 140px;
+    height: 215px;
+    padding: 0;
+}
+
+.btnFontFamily {
+    width: 122px;
+    height: 30px;
+    cursor: pointer;
+    border: 0;
+    padding: 0 2 0 40;
+  }
+  
+.btnFontFamily:hover {
+    color: #ffffff;
+    background-color: #3e67d7;
+}

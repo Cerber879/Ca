@@ -11,14 +11,15 @@ export function handleChange(
   dispatch: Dispatch<AnyAction>,
   objectBlocks: ObjectList,
   history: CanvasState[],
-  block: TextBlock) {
+  block: TextBlock
+) {
   const updatedInputBlocks = objectBlocks.map((inputElement) => {
     const inputBlock = inputElement as TextBlock;
     if (inputBlock.id === block.id) {
-    //   const elHistory: CanvasState = {
-    //     objects: objectBlocks,
-    //   };
-    //   dispatch(setHistory([...history, elHistory]));
+      //   const elHistory: CanvasState = {
+      //     objects: objectBlocks,
+      //   };
+      //   dispatch(setHistory([...history, elHistory]));
       return {
         ...inputBlock,
         text: {
@@ -43,14 +44,15 @@ export function handleChangeStyle(
   isActiveTextItalic: boolean,
   isActiveTextUnderLine: boolean,
   isActiveTextStrikeThrough: boolean,
-  isActiveTransparentText: boolean) {
+  isActiveTransparentText: boolean
+) {
   if (block.active) {
     const updatedInputBlocks = objectBlocks.map((inputBlock) => {
       if (inputBlock.id === block.id) {
         const elHistory: CanvasState = {
           objects: objectBlocks,
           size: { width: fontCanvas.width, height: fontCanvas.height },
-          font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity }
+          font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
         };
         dispatch(setHistory([...history, elHistory]));
         return {
@@ -61,10 +63,14 @@ export function handleChangeStyle(
             fontFamily: elStyle.activeFontFamily,
             fontWeight: isActiveTextBold ? "bold" : "normal",
             fontStyle: isActiveTextItalic ? "italic" : "normal",
-            textDecorationLine: `${isActiveTextUnderLine ? "underline" : ""} ${isActiveTextStrikeThrough ? "line-through" : ""}`,
-            borderColor: !isActiveTransparentText ? elStyle.activeColorBorder : "transparent",
+            textDecorationLine: `${isActiveTextUnderLine ? "underline" : ""} ${
+              isActiveTextStrikeThrough ? "line-through" : ""
+            }`,
+            borderColor: !isActiveTransparentText
+              ? elStyle.activeColorBorder
+              : "transparent",
             color: elStyle.activeColor,
-          }
+          },
         };
       }
       return inputBlock;

@@ -40,8 +40,4 @@ export const graphicBlock: GraphicObject = {
   position: { x: 400, y: 100 },
 };
 
-export const objects = [
-  textBlock,
-  imageBlock,
-  graphicBlock
-];
+export const objects = [textBlock, imageBlock, graphicBlock];
