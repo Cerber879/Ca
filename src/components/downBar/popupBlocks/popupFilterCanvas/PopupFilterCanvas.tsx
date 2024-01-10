@@ -62,7 +62,7 @@ export function PopupFilterCanvas({ close }: PopupProps) {
   return (
     <>
       <div style={{ display: overlayStyle }} className={styles.overlay}></div>
-      <div style={{ display: popupStyle, width: "230px", height: "160px" }} className={styles.popup}>
+      <div style={{ display: popupStyle, width: "230px", height: "180px" }} className={styles.popup}>
         <div className={styles.flex_block}>
           <span className={styles.resizeText}>Filter Canvas</span>
           <button
@@ -73,11 +73,16 @@ export function PopupFilterCanvas({ close }: PopupProps) {
             x
           </button>
         </div>
-        <input
-          style={{ opacity: opacity }}
-          type="color"
-          id="color-picker"
-        ></input>
+        <div className={styles.flex_block} style={{ marginLeft: -80 }}>
+          <span>color:</span>
+          <div className={`${styles.flex_block} ${styles.colorBlock}`}>
+            <input
+              style={{ opacity: opacity, cursor: "pointer" }}
+              type="color"
+              id="color-picker"
+            ></input>
+          </div>
+        </div>
         <div className={`${styles.flex_block} ${styles.opacityCanvas}`}>
           <span>opacity:</span>
           <input

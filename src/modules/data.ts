@@ -45,3 +45,41 @@ export const canvas: Canvas = {
   backgroundColor: "white",
   select: { position: { x: 0, y: 0 }, size: { width: 800, height: 600 } },
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isTextBlock(block: any): block is TextBlock {
+  try {
+    if (
+      block &&
+      typeof block.type === "string" &&
+      typeof block.width === "number" &&
+      typeof block.height === "number" &&
+      typeof block.text.value === "string"
+    ) {
+      return true;
+    }
+  }
+  catch {
+    return false;
+  }
+  return false;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isGraphicObject(block: any): block is GraphicObject {
+  try {
+    if (
+      block &&
+      typeof block.type === "string" &&
+      typeof block.color === "string" &&
+      typeof block.width === "number" &&
+      typeof block.height === "number" &&
+      typeof block.borderColor === "string"
+    ) {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+  return false;
+}

@@ -29,6 +29,7 @@ export function СreateObjectBlock(
     font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
   };
   dispatch(setHistory([...history, elHistory]));
+  clickedPosition = { x: clickedPosition.x - graphicBlock.width / 2, y: clickedPosition.y - graphicBlock.height / 2 };
   switch (obj) {
   case "triangle": {
     const objBlock: GraphicObject = {

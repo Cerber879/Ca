@@ -6,15 +6,13 @@ import { ObjectType, TextBlock } from "../../../../modules/types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../ReduxStore";
 
-import { setDelX, setDelY, setDragging } from "../../moves/moveSettings";
 import { delActiveStateObjects } from "../../../StateObjects";
-
-import { CanvasState, setHistory } from "../../history/historySettings";
 
 import { handleChange, handleChangeStyle } from "./handleChange";
 import { setObjectBlocks } from "../../createBlock/appSlice";
 import { setStyleActiveText } from "../../../topBar/viewButtonsText/TextDecoration/setStyleActiveText";
-import InputResizeAtActive from "./ResizeInputAtActive";
+import ResizeInput from "./ResizeInput";
+import MoveInput from "./MoveInput";
 
 const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
   const dispatch = useDispatch();
@@ -23,30 +21,17 @@ const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
   const history = useSelector((state: RootState) => state.history.history);
 
   const inputRefs: React.MutableRefObject<
-    (HTMLInputElement | HTMLTextAreaElement)[]
+    (HTMLInputElement | HTMLDivElement)[]
   > = useRef([]);
 
-  const isActiveTransparentText = useSelector(
-    (state: RootState) => state.textTransparentSlice.activeTextTransparent
-  );
+  const isActiveTransparentText = useSelector((state: RootState) => state.textTransparentSlice.activeTextTransparent);
 
-  const isActiveTextBold = useSelector(
-    (state: RootState) => state.textBoldSettSlice.activeTextBold
-  );
-  const isActiveTextItalic = useSelector(
-    (state: RootState) => state.textItalicSettSlice.activeTextItalic
-  );
-  const isActiveTextUnderLine = useSelector(
-    (state: RootState) => state.textUnderLineSettSlice.activeTextUnderLine
-  );
-  const isActiveTextStrikeThrough = useSelector(
-    (state: RootState) =>
-      state.textStrikeThroughSettSlice.activeTextStrikeThrough
-  );
+  const isActiveTextBold = useSelector((state: RootState) => state.textBoldSettSlice.activeTextBold);
+  const isActiveTextItalic = useSelector((state: RootState) => state.textItalicSettSlice.activeTextItalic);
+  const isActiveTextUnderLine = useSelector((state: RootState) => state.textUnderLineSettSlice.activeTextUnderLine);
+  const isActiveTextStrikeThrough = useSelector((state: RootState) => state.textStrikeThroughSettSlice.activeTextStrikeThrough);
 
-  const objectBlocks = useSelector(
-    (state: RootState) => state.app.objectBlocks
-  );
+  const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
 
   const zoom = useSelector((state: RootState) => state.zoom.zoom) / 100;
   const elStyle = useSelector((state: RootState) => state.styleElements);
@@ -60,46 +45,20 @@ const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
   }, [objectBlocks.length]);
 
   useEffect(() => {
-    handleChangeStyle(
-      dispatch,
-      objectBlocks,
-      history,
-      fontCanvas,
-      block,
-      elStyle,
-      isActiveTextBold,
-      isActiveTextItalic,
-      isActiveTextUnderLine,
-      isActiveTextStrikeThrough,
-      isActiveTransparentText
+    handleChangeStyle(dispatch, objectBlocks, history, fontCanvas, block, elStyle,
+      isActiveTextBold, isActiveTextItalic, isActiveTextUnderLine, isActiveTextStrikeThrough, isActiveTransparentText
     );
-  }, [
-    elStyle,
-    isActiveTextBold,
-    isActiveTextItalic,
-    isActiveTextUnderLine,
-    isActiveTextStrikeThrough,
-    isActiveTransparentText,
-  ]);
-
-  const handleMouseClickFocus = (
-    event: React.MouseEvent<HTMLTextAreaElement, MouseEvent>,
-    index: number
-  ) => {
-    event.preventDefault();
-    const targetInput = inputRefs.current[index];
-    if (targetInput && document.activeElement !== targetInput) {
-      targetInput.focus();
-    }
-  };
+  }, [elStyle, isActiveTextBold, isActiveTextItalic, isActiveTextUnderLine,
+    isActiveTextStrikeThrough, isActiveTransparentText]);
 
   return (
     <>
-      <textarea
+      <div
         className={styles.inputBlock}
         spellCheck="false"
         key={block.id}
-        value={block.text.value}
+        contentEditable="true"
+        suppressContentEditableWarning={true}
         style={{
           userSelect: "none",
           width: block.width * zoom,
@@ -133,33 +92,28 @@ const InputComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
             dispatch(setObjectBlocks(updatedBlocks));
           }
         }}
-        onMouseDown={(e) => {
-          handleMouseClickFocus(e, block.id);
-          let updatedBlocks = objectBlocks;
-          if (!block.active) {
-            setStyleActiveText(block, dispatch);
-            updatedBlocks = delActiveStateObjects(objectBlocks);
-            updatedBlocks[block.id - 1].active = true;
-            dispatch(setObjectBlocks(updatedBlocks));
-          }
-
-          const elHistory: CanvasState = {
-            objects: updatedBlocks,
-            size: { width: fontCanvas.width, height: fontCanvas.height },
-            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
-          };
-          dispatch(setHistory([...history, elHistory]));
-
-          dispatch(setDragging(true));
-          dispatch(setDelX(e.clientX - block.position.x));
-          dispatch(setDelY(e.clientY - block.position.y));
-          e.preventDefault();
-        }}
-        onChange={(event) =>
-          handleChange(event, dispatch, objectBlocks, history, block)
+        onBlur={(event) => {
+          handleChange(event, dispatch, objectBlocks, history, block);
         }
-      />
-      {block.active && <InputResizeAtActive block={block} />}
+        }
+      >{block.text.value}</div>
+      {block.active &&
+      <>
+        <div
+          style={{
+            zIndex: 2,
+            position: "absolute",
+            left: block.position.x * zoom - 1,
+            top: block.position.y * zoom - 1,
+            width: block.width * zoom,
+            height: block.height * zoom,
+            border: "1px dashed black",
+            pointerEvents: "none",
+          }} />
+        <MoveInput block={block} />
+        <ResizeInput block={block} />
+      </>
+      }
     </>
   );
 };

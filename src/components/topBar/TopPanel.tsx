@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import styles from "./panel.module.css";
 
+import { PopupConservation } from "./popupBlocks/popupConservationCard/PopupConservation";
 import { PopupClean } from "./popupBlocks/popupClean/PopupClean";
 import { PopupFonts } from "./popupBlocks/popupFonts/PopupFonts";
 import { PopupFontFamily } from "./popupBlocks/popupFontFamily/PopupFontFamily";
@@ -28,6 +29,7 @@ import { setActiveObjSquare } from "./viewButtonsObject/ObjectDecoration/Objects
 import { setActiveObjTriangle } from "./viewButtonsObject/ObjectDecoration/Objects/triangleStatus/triangleSettings";
 import { ViewButtonsHistory } from "./viewButtonsHistory/viewButtonsHistory";
 import { ViewButtonsActionCanvas } from "./viewButtonsActionCanvas/viewButtonsActionCanvas";
+import { PopupChangeImg } from "./popupBlocks/popupChangeImage/PopupChangeImg";
 
 export function TopPanel() {
   const dispatch = useDispatch();
@@ -136,6 +138,12 @@ export function TopPanel() {
       )}
       {popupSLice.isCleaneerOpen && (
         <PopupClean close={() => PopupStatus("cleaner", dispatch, popupSLice.isCleaneerOpen)}/>
+      )}
+      {popupSLice.isConservationCardOpen && (
+        <PopupConservation close={() => PopupStatus("conservation", dispatch, popupSLice.isConservationCardOpen)}/>
+      )}
+      {popupSLice.isChangeImageOpen && (
+        <PopupChangeImg close={() => PopupStatus("changeImage", dispatch, popupSLice.isChangeImageOpen)}/>
       )}
       {popupSLice.isColorsOpen && (
         <PopupColors close={() => PopupStatus("colors", dispatch, popupSLice.isColorsOpen)}/>

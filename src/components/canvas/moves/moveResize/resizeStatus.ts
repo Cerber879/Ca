@@ -18,7 +18,45 @@ export function ResizeStatus(
 
   const handleMouseMove = (e: { clientX: number; clientY: number }) => {
     const updatedBlocks = objectBlocks.map((objectBlock) => {
-      if (objectBlock.active === true && move.resizeDirection === "lu") {
+      if(objectBlock.active === true && move.resizeDirection === "l") {
+        const newPositionX = e.clientX - canvasLeft;
+        const maxX = objectBlock.position.x + objectBlock.width;
+        const clampedX = Math.min(newPositionX, maxX);
+        return {
+          ...objectBlock,
+          position: {
+            x: clampedX,
+            y: objectBlock.position.y,
+          },
+          width: objectBlock.position.x - clampedX + objectBlock.width,
+        };
+      } else if (objectBlock.active === true && move.resizeDirection === "u") {
+        const newPositionY = e.clientY - canvasTop;
+        const maxY = objectBlock.position.y + objectBlock.height;
+        const clampedY = Math.min(newPositionY, maxY);
+        return {
+          ...objectBlock,
+          position: {
+            x: objectBlock.position.x,
+            y: clampedY,
+          },
+          height: objectBlock.position.y - clampedY + objectBlock.height,
+        };
+      } else if (objectBlock.active === true && move.resizeDirection === "r") {
+        let newWidth = e.clientX - objectBlock.position.x - canvasLeft;
+        if (newWidth <= 0) newWidth = 0;
+        return {
+          ...objectBlock,
+          width: newWidth,
+        };
+      } else if (objectBlock.active === true && move.resizeDirection === "d") {
+        let newHeight = e.clientY - objectBlock.position.y - canvasTop;
+        if (newHeight <= 0) newHeight = 0;
+        return {
+          ...objectBlock,
+          height: newHeight,
+        };
+      } else if (objectBlock.active === true && move.resizeDirection === "lu") {
         const newPositionX = e.clientX - canvasLeft;
         const newPositionY = e.clientY - canvasTop;
 

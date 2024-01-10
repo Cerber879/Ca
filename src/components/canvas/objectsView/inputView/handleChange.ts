@@ -7,7 +7,7 @@ import { styleElements } from "../../../../reducers/setBar/StyleElements";
 import { fontCanvasState } from "../../../../reducers/canvas/fontCanvas";
 
 export function handleChange(
-  event: React.ChangeEvent<HTMLTextAreaElement>,
+  event: React.FocusEvent<HTMLDivElement>,
   dispatch: Dispatch<AnyAction>,
   objectBlocks: ObjectList,
   history: CanvasState[],
@@ -16,15 +16,11 @@ export function handleChange(
   const updatedInputBlocks = objectBlocks.map((inputElement) => {
     const inputBlock = inputElement as TextBlock;
     if (inputBlock.id === block.id) {
-      //   const elHistory: CanvasState = {
-      //     objects: objectBlocks,
-      //   };
-      //   dispatch(setHistory([...history, elHistory]));
       return {
         ...inputBlock,
         text: {
           ...inputBlock.text,
-          value: event.target.value,
+          value: event.currentTarget.textContent || "",
         },
       };
     }
@@ -46,15 +42,20 @@ export function handleChangeStyle(
   isActiveTextStrikeThrough: boolean,
   isActiveTransparentText: boolean
 ) {
+  const updateHistory = history;
   if (block.active) {
-    const updatedInputBlocks = objectBlocks.map((inputBlock) => {
-      if (inputBlock.id === block.id) {
-        const elHistory: CanvasState = {
-          objects: objectBlocks,
-          size: { width: fontCanvas.width, height: fontCanvas.height },
-          font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
-        };
-        dispatch(setHistory([...history, elHistory]));
+    const updatedInputBlocks = objectBlocks.map((object) => {
+      if (object.id === block.id) {
+        const inputBlock = block as TextBlock;
+        if (inputBlock.text.fontStyle !== "none") {
+          const elHistory: CanvasState = {
+            objects: objectBlocks,
+            size: { width: fontCanvas.width, height: fontCanvas.height },
+            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
+          };
+          updateHistory.push(elHistory);
+          dispatch(setHistory([...updateHistory]));
+        }
         return {
           ...inputBlock,
           text: {
@@ -73,7 +74,7 @@ export function handleChangeStyle(
           },
         };
       }
-      return inputBlock;
+      return object;
     });
     dispatch(setObjectBlocks([...updatedInputBlocks]));
   }

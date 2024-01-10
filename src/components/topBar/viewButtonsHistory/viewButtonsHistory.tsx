@@ -13,10 +13,15 @@ export function ViewButtonsHistory() {
   const history = useSelector((state: RootState) => state.history.history);
   const prophecy = useSelector((state: RootState) => state.history.prophecy);
 
+  const isActiveObjFill = useSelector((state: RootState) => state.objFillSettSlice.activeObjFill);
+  const isActiveObjStroke = useSelector((state: RootState) => state.objStrokeSettSlice.activeObjStroke);
+  const isActiveObjStrokeFill = useSelector((state: RootState) => state.objStrokeFillSettSlice.activeObjStrokeFill);
+
   return (
     <>
       <button
-        onClick={() => ComeBack(dispatch, objectBlocks, history, prophecy, fontCanvas)}
+        onClick={() => ComeBack(dispatch, objectBlocks, history, prophecy, fontCanvas,
+          isActiveObjStroke, isActiveObjFill, isActiveObjStrokeFill)}
         className={`${styles.text} ${styles.svg_btn}`}
         style={{
           opacity: history.length === 0 ? "0.5" : "1",
@@ -31,7 +36,8 @@ export function ViewButtonsHistory() {
           height="18" />
       </button>
       <button
-        onClick={() => ComeForward(dispatch, objectBlocks, history, prophecy, fontCanvas)}
+        onClick={() => ComeForward(dispatch, objectBlocks, history, prophecy, fontCanvas,
+          isActiveObjStroke, isActiveObjFill, isActiveObjStrokeFill)}
         className={`${styles.text} ${styles.svg_btn}`}
         style={{
           opacity: prophecy.length === 0 ? "0.5" : "1",

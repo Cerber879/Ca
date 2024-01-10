@@ -1,4 +1,6 @@
 import React from "react";
+import styles from "./index.module.css";
+
 import { ViewCanvas } from "./components/canvas/ViewCanvas";
 import { TopPanel } from "./components/topBar/TopPanel";
 import { DownPanel } from "./components/downBar/DownPanel";
@@ -11,14 +13,10 @@ function App() {
   const zoom = useSelector((state: RootState) => state.zoom.zoom) / 100;
 
   return (
-    <div
+    <div className={styles.page}
       style={{
-        top: "42px",
-        left: "0px",
         width: width * zoom,
         height: height * zoom,
-        overflow: "hidden",
-        position: "relative",
       }}
     >
       <TopPanel />

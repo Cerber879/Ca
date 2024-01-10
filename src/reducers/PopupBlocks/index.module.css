@@ -2,13 +2,6 @@ body {
   background-color: #e5e5e5;
 }
 
-.page {
-  overflow: hidden;
-  position: relative;
-  top: 42px;
-  left: 0px;
-}
-
 svg, img, span, div {
   -webkit-user-select: none;
   -khtml-user-select: none;

@@ -2,6 +2,8 @@ import { AnyAction, Dispatch } from "redux";
 
 import {
   setIsCleanerOpen,
+  setIsConservationCardOpen,
+  setIsChangeImageOpen,
   setIsFontSizesOpen,
   setIsFontFamiliesOpen,
   setIsColorsOpen,
@@ -20,6 +22,22 @@ export function PopupStatus(
       dispatch(setIsCleanerOpen(true));
     } else {
       dispatch(setIsCleanerOpen(false));
+    }
+    break;
+  }
+  case "conservation": {
+    if (isOpen === false) {
+      dispatch(setIsConservationCardOpen(true));
+    } else {
+      dispatch(setIsConservationCardOpen(false));
+    }
+    break;
+  }
+  case "changeImage": {
+    if (isOpen === false) {
+      dispatch(setIsChangeImageOpen(true));
+    } else {
+      dispatch(setIsChangeImageOpen(false));
     }
     break;
   }

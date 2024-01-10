@@ -5,14 +5,15 @@ import { delActiveStateObjects } from "../../StateObjects";
 import { setObjectBlocks } from "../../canvas/createBlock/appSlice";
 import { DownloadFile } from "./BroadcastFileJSON/DownloadObjects";
 import { SaveToFile } from "./BroadcastFileJSON/SaveObjects";
-import { SaveCard } from "./SaveCard/SaveCard";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../ReduxStore";
+import { PopupStatus } from "../../../reducers/PopupBlocks/PopupStatus";
 
 export function ViewButtonsActionCanvas() {
   const dispatch = useDispatch();
 
   const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
+  const popupSLice = useSelector((state: RootState) => state.popupSLice);
 
   const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
   const history = useSelector((state: RootState) => state.history.history);
@@ -21,8 +22,8 @@ export function ViewButtonsActionCanvas() {
       onClick={() => {
         const updatedBlocks = delActiveStateObjects(objectBlocks);
         dispatch(setObjectBlocks(updatedBlocks));
-        SaveCard();
-      } }
+        PopupStatus("conservation", dispatch, popupSLice.isConservationCardOpen);
+      }}
       className={`${styles.text} ${styles.svg_btn}`}
     >
       <img
@@ -31,7 +32,8 @@ export function ViewButtonsActionCanvas() {
         alt="Icon"
         width="16"
         height="16" />
-    </button><button
+    </button>
+    <button
       onClick={() => SaveToFile(
         objectBlocks,
         { width: fontCanvas.width, height: fontCanvas.height },

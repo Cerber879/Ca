@@ -117,7 +117,7 @@ export function ViewCanvas({ width, height }: CanvasProps) {
     };
 
     const handleMouseUp = () => {
-      deleteDuplicate(dispatch, objectBlocks, history);
+      deleteDuplicate(dispatch, objectBlocks, history, fontCanvas);
       dispatch(setDrag(false));
       dispatch(setDragging(false));
       dispatch(setDraggingSize(false, ""));
@@ -160,7 +160,7 @@ export function ViewCanvas({ width, height }: CanvasProps) {
 
   return (
     <>
-      <div style={{ position: "absolute", width: width, height: height }}>
+      <div id="container" style={{ position: "absolute", width: width, height: height }}>
         <canvas
           className={styles.canvas}
           style={{ width: `${width}px`, height: `${height}px`, position: "absolute" }}
@@ -175,13 +175,13 @@ export function ViewCanvas({ width, height }: CanvasProps) {
           else if (object.type === "triangle" || object.type === "square" || object.type === "circle")
             return <GraphicComponent key={object.id} object={object} />;
         })}
+        <div
+          style={{
+            zIndex: 2, position: "fixed", pointerEvents: "none", backgroundColor: fontCanvas.filter,
+            opacity: fontCanvas.opacity / 100, width: width, height: height,
+          }}
+        ></div>
       </div>
-      <div
-        style={{
-          zIndex: 2, position: "fixed", pointerEvents: "none", backgroundColor: fontCanvas.filter,
-          opacity: fontCanvas.opacity / 100, width: width, height: height,
-        }}
-      ></div>
     </>
   );
 }

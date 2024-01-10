@@ -1,4 +1,5 @@
 import { Position, ImageBlock, ObjectList } from "../../../modules/types";
+import { PopupStatus } from "../../../reducers/PopupBlocks/PopupStatus";
 import { fontCanvasState } from "../../../reducers/canvas/fontCanvas";
 import {
   setHistory,
@@ -38,6 +39,13 @@ export function СreateImageBlock(
           image.onload = () => {
             const width = image.naturalWidth;
             const height = image.naturalHeight;
+            const sizeImg = width > fontCanvas.width || height > fontCanvas.height;
+            if(sizeImg) {
+              PopupStatus("changeImage", dispatch, false);
+              clickedPosition = { x: 0, y: 0 };
+            } else {
+              clickedPosition = { x: clickedPosition.x - width / 2, y: clickedPosition.y - height / 2 };
+            }
             const imageBlock: ImageBlock = {
               id: objectBlocks.length + 1,
               active: true,

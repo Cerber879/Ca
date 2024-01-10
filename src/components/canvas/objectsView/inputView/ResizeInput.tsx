@@ -5,7 +5,7 @@ import { setHistory, CanvasState } from "../../history/historySettings";
 import { setDraggingSize } from "../../moves/moveSettings";
 import { TextBlock } from "../../../../modules/types";
 
-const InputResizeAtActive: React.FC<{ block: TextBlock }> = ({ block }) => {
+const ResizeInput: React.FC<{ block: TextBlock }> = ({ block }) => {
   const dispatch = useDispatch();
 
   const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
@@ -15,32 +15,87 @@ const InputResizeAtActive: React.FC<{ block: TextBlock }> = ({ block }) => {
   const history = useSelector((state: RootState) => state.history.history);
   const zoom = useSelector((state: RootState) => state.zoom.zoom) / 100;
 
+  const mouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const elHistory: CanvasState = {
+      objects: objectBlocks,
+      size: { width: fontCanvas.width, height: fontCanvas.height },
+      font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
+    };
+    dispatch(setHistory([...history, elHistory]));
+    block.active = true;
+    event.preventDefault();
+  };
+
   return (
     <>
       <div
+        onMouseDown={(event) => {
+          dispatch(setDraggingSize(true, "l"));
+          mouseDown(event);
+        }}
         style={{
           zIndex: 2,
           position: "absolute",
-          left: block.position.x * zoom - 1,
-          top: block.position.y * zoom - 1,
-          width: block.width * zoom,
-          height: block.height * zoom,
-          border: "1px dashed black",
-          pointerEvents: "none",
+          left: block.position.x * zoom - 3.5,
+          top: block.position.y * zoom + block.height * zoom / 2 - 3.5,
+          width: "5px",
+          height:"5px",
+          border: "1px solid black",
+          cursor: "e-resize",
         }}
       />
       <div
         onMouseDown={(event) => {
-          const elHistory: CanvasState = {
-            objects: objectBlocks,
-            size: { width: fontCanvas.width, height: fontCanvas.height },
-            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
-          };
-          dispatch(setHistory([...history, elHistory]));
-
+          dispatch(setDraggingSize(true, "u"));
+          mouseDown(event);
+        }}
+        style={{
+          zIndex: 2,
+          position: "absolute",
+          left: block.position.x * zoom + block.width * zoom / 2 - 3.5,
+          top: block.position.y * zoom - 3.5,
+          width: "5px",
+          height:"5px",
+          border: "1px solid black",
+          cursor: "n-resize",
+        }}
+      />
+      <div
+        onMouseDown={(event) => {
+          dispatch(setDraggingSize(true, "r"));
+          mouseDown(event);
+        }}
+        style={{
+          zIndex: 2,
+          position: "absolute",
+          left: block.position.x * zoom + block.width * zoom - 3.5,
+          top: block.position.y * zoom + block.height * zoom / 2 - 3.5,
+          width: "5px",
+          height:"5px",
+          border: "1px solid black",
+          cursor: "e-resize",
+        }}
+      />
+      <div
+        onMouseDown={(event) => {
+          dispatch(setDraggingSize(true, "d"));
+          mouseDown(event);
+        }}
+        style={{
+          zIndex: 2,
+          position: "absolute",
+          left: block.position.x * zoom + block.width * zoom / 2 - 3.5,
+          top: block.position.y * zoom + block.height * zoom - 3.5,
+          width: "5px",
+          height:"5px",
+          border: "1px solid black",
+          cursor: "n-resize",
+        }}
+      />
+      <div
+        onMouseDown={(event) => {
           dispatch(setDraggingSize(true, "lu"));
-          block.active = true;
-          event.preventDefault();
+          mouseDown(event);
         }}
         style={{
           zIndex: 2,
@@ -55,16 +110,8 @@ const InputResizeAtActive: React.FC<{ block: TextBlock }> = ({ block }) => {
       />
       <div
         onMouseDown={(event) => {
-          const elHistory: CanvasState = {
-            objects: objectBlocks,
-            size: { width: fontCanvas.width, height: fontCanvas.height },
-            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
-          };
-          dispatch(setHistory([...history, elHistory]));
-
           dispatch(setDraggingSize(true, "ru"));
-          block.active = true;
-          event.preventDefault();
+          mouseDown(event);
         }}
         style={{
           zIndex: 2,
@@ -79,16 +126,8 @@ const InputResizeAtActive: React.FC<{ block: TextBlock }> = ({ block }) => {
       />
       <div
         onMouseDown={(event) => {
-          const elHistory: CanvasState = {
-            objects: objectBlocks,
-            size: { width: fontCanvas.width, height: fontCanvas.height },
-            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
-          };
-          dispatch(setHistory([...history, elHistory]));
-
           dispatch(setDraggingSize(true, "ld"));
-          block.active = true;
-          event.preventDefault();
+          mouseDown(event);
         }}
         style={{
           zIndex: 2,
@@ -103,16 +142,8 @@ const InputResizeAtActive: React.FC<{ block: TextBlock }> = ({ block }) => {
       />
       <div
         onMouseDown={(event) => {
-          const elHistory: CanvasState = {
-            objects: objectBlocks,
-            size: { width: fontCanvas.width, height: fontCanvas.height },
-            font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
-          };
-          dispatch(setHistory([...history, elHistory]));
-
           dispatch(setDraggingSize(true, "rd"));
-          block.active = true;
-          event.preventDefault();
+          mouseDown(event);
         }}
         style={{
           zIndex: 2,
@@ -129,4 +160,4 @@ const InputResizeAtActive: React.FC<{ block: TextBlock }> = ({ block }) => {
   );
 };
 
-export default InputResizeAtActive;
+export default ResizeInput;

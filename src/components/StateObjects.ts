@@ -2,6 +2,8 @@ import { setObjectBlocks } from "./canvas/createBlock/appSlice";
 import { Dispatch } from "react";
 import { AnyAction } from "redux";
 import { ObjectList } from "../modules/types";
+import { setHistory, CanvasState } from "./canvas/history/historySettings";
+import { fontCanvasState } from "../reducers/canvas/fontCanvas";
 
 export function delActiveStateObjects(objectBlocks: ObjectList) {
   const updatedBlocks = objectBlocks.map((objectBlock) => {
@@ -60,50 +62,87 @@ function setIdObjectBlocks(objectBlocks: ObjectList, id: number) {
 
 export function removeActiveStateObjects(
   dispatch: Dispatch<AnyAction>,
-  objectBlocks: ObjectList
+  objectBlocks: ObjectList,
+  history: CanvasState[],
+  fontCanvas: fontCanvasState
 ) {
-  const updatedObjects = objectBlocks.filter(
-    (objectBlock) => !objectBlock.active
-  );
-  const updatedIdObjeects = setIdObjectBlocks(
-    updatedObjects,
-    getActiveObjectId(objectBlocks)
-  );
+  const elHistory: CanvasState = {
+    objects: objectBlocks,
+    size: { width: fontCanvas.width, height: fontCanvas.height },
+    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
+  };
+  dispatch(setHistory([...history, elHistory]));
+  const updatedObjects = objectBlocks.filter((objectBlock) => !objectBlock.active);
+  const updatedIdObjeects = setIdObjectBlocks(updatedObjects, getActiveObjectId(objectBlocks));
   dispatch(setObjectBlocks(updatedIdObjeects));
 }
 
 export function moveElementForward(
   dispatch: Dispatch<AnyAction>,
-  objectBlocks: ObjectList
+  objectBlocks: ObjectList,
+  history: CanvasState[],
+  fontCanvas: fontCanvasState
 ) {
-  const activeIndex = objectBlocks.findIndex(
-    (objectBlock) => objectBlock.active === true
-  );
-
+  const elHistory: CanvasState = {
+    objects: objectBlocks,
+    size: { width: fontCanvas.width, height: fontCanvas.height },
+    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
+  };
+  dispatch(setHistory([...history, elHistory]));
+  const activeIndex = objectBlocks.findIndex((objectBlock) => objectBlock.active === true);
   if (activeIndex < objectBlocks.length - 1) {
-    const temp = objectBlocks[activeIndex];
-    objectBlocks[activeIndex] = objectBlocks[activeIndex + 1];
-    objectBlocks[activeIndex + 1] = temp;
-
-    objectBlocks[activeIndex + 1].id = objectBlocks[activeIndex + 1].id + 1;
-    objectBlocks[activeIndex].id = objectBlocks[activeIndex].id - 1;
+    const temp1 = objectBlocks[activeIndex];
+    const temp2 = objectBlocks[activeIndex + 1];
+    const updatedBlocks = objectBlocks.map((objectBlock) => {
+      if (objectBlock.id === activeIndex + 1) {
+        return {
+          ...temp2,
+          id: temp1.id
+        };
+      } else if (objectBlock.id === activeIndex + 2) {
+        return {
+          ...temp1,
+          id: temp2.id
+        };
+      }
+      return objectBlock;
+    });
+    console.log(updatedBlocks);
+    dispatch(setObjectBlocks(updatedBlocks));
   }
-  dispatch(setObjectBlocks(objectBlocks));
 }
 
 export function moveElementBack(
   dispatch: Dispatch<AnyAction>,
   objectBlocks: ObjectList,
+  history: CanvasState[],
+  fontCanvas: fontCanvasState
 ) {
+  const elHistory: CanvasState = {
+    objects: objectBlocks,
+    size: { width: fontCanvas.width, height: fontCanvas.height },
+    font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
+  };
+  dispatch(setHistory([...history, elHistory]));
   const activeIndex = objectBlocks.findIndex((objectBlock) => objectBlock.active === true);
   if (activeIndex > 0) {
-
-    const temp = objectBlocks[activeIndex];
-    objectBlocks[activeIndex] = objectBlocks[activeIndex - 1];
-    objectBlocks[activeIndex - 1] = temp;
-
-    objectBlocks[activeIndex - 1].id = objectBlocks[activeIndex - 1].id - 1;
-    objectBlocks[activeIndex].id = objectBlocks[activeIndex].id + 1;
+    const temp1 = objectBlocks[activeIndex - 1];
+    const temp2 = objectBlocks[activeIndex];
+    const updatedBlocks = objectBlocks.map((objectBlock) => {
+      if (objectBlock.id === activeIndex) {
+        return {
+          ...temp2,
+          id: temp1.id
+        };
+      } else if (objectBlock.id === activeIndex + 1) {
+        return {
+          ...temp1,
+          id: temp2.id
+        };
+      }
+      return objectBlock;
+    });
+    console.log(updatedBlocks);
+    dispatch(setObjectBlocks(updatedBlocks));
   }
-  dispatch(setObjectBlocks(objectBlocks));
 }

@@ -1,5 +1,7 @@
 type PopupsState = {
   isCleaneerOpen: boolean;
+  isConservationCardOpen: boolean;
+  isChangeImageOpen: boolean;
   isFontSizesOpen: boolean;
   isFontFamiliesOpen: boolean;
   isColorsOpen: boolean;
@@ -9,6 +11,8 @@ type PopupsState = {
 
 const initialState: PopupsState = {
   isCleaneerOpen: false,
+  isConservationCardOpen: false,
+  isChangeImageOpen: false,
   isFontSizesOpen: false,
   isFontFamiliesOpen: false,
   isColorsOpen: false,
@@ -20,6 +24,20 @@ const setIsCleanerOpen = (value: boolean) => ({
   type: "SET_IS_CLEANER_OPEN",
   payload: {
     isCleaneerOpen: value,
+  },
+});
+
+const setIsConservationCardOpen = (value: boolean) => ({
+  type: "SET_IS_CONSERVATION_CARD_OPEN",
+  payload: {
+    isConservationCardOpen: value,
+  },
+});
+
+const setIsChangeImageOpen = (value: boolean) => ({
+  type: "SET_IS_CHANGE_IMAGE_OPEN",
+  payload: {
+    isChangeImageOpen: value,
   },
 });
 
@@ -68,6 +86,16 @@ const popupElementsReducer = (
       ...state,
       isCleaneerOpen: action.payload.isCleaneerOpen,
     };
+  case "SET_IS_CONSERVATION_CARD_OPEN":
+    return {
+      ...state,
+      isConservationCardOpen: action.payload.isConservationCardOpen,
+    };
+  case "SET_IS_CHANGE_IMAGE_OPEN":
+    return {
+      ...state,
+      isChangeImageOpen: action.payload.isChangeImageOpen,
+    };
   case "SET_IS_FONT_SIZES_OPEN":
     return {
       ...state,
@@ -100,6 +128,8 @@ const popupElementsReducer = (
 
 export {
   setIsCleanerOpen,
+  setIsConservationCardOpen,
+  setIsChangeImageOpen,
   setIsFontSizesOpen,
   setIsFontFamiliesOpen,
   setIsColorsOpen,

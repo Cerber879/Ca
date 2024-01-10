@@ -39,7 +39,7 @@ const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
 
   return (
     <>
-      <svg
+      <div
         className={styles.imageBlock}
         key={block.id}
         style={{
@@ -48,6 +48,7 @@ const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           height: block.height * zoom,
           left: block.position.x * zoom,
           top: block.position.y * zoom,
+          cursor: "all-scroll",
         }}
         onClick={() => {
           if (!block.active) {
@@ -76,53 +77,82 @@ const GraphicComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           dispatch(setDelX(e.clientX - block.position.x));
           dispatch(setDelY(e.clientY - block.position.y));
         }}
-        version="1.1"
-        id="Layer_1"
-        xmlns="http://www.w3.org/2000/svg"
-        x="0px"
-        y="0px"
-        viewBox="0 0 512 512"
+
       >
         {block.type === "triangle" && (
-          <g>
-            <g>
-              <polygon
-                points="256,30 486,472 26,472"
-                fill={block.color}
-                stroke={block.borderColor}
-                strokeWidth={25}
-              />
-            </g>
-          </g>
+          <svg
+            style={{
+              width: block.width * zoom,
+              height: block.height * zoom
+            }}
+          >
+            <polygon
+              points={`${block.borderColor === "transparent" ? "0" : "4"},
+              ${block.borderColor === "transparent" ? block.height : block.height - 2} 
+              ${block.width / 2},${block.borderColor === "transparent" ? "0" : "6"} 
+              ${block.borderColor === "transparent" ? block.width : block.width - 4},
+              ${block.borderColor === "transparent" ? block.height : block.height - 2}`}
+              fill={block.color}
+              stroke={block.borderColor}
+              strokeWidth={5}
+            />
+          </svg>
         )}
         {block.type === "square" && (
-          <g>
-            <g>
-              <polygon
-                points="25,25 475,25 475,475 25,475"
-                fill={block.color}
-                stroke={block.borderColor}
-                strokeWidth={25}
-              />
-            </g>
-          </g>
+          <svg
+            style={{
+              width: block.width * zoom,
+              height: block.height * zoom
+            }}
+          >
+            <rect
+              x={block.borderColor === "transparent" ? 0 : 3}
+              y={block.borderColor === "transparent" ? 0 : 3}
+              width={block.borderColor === "transparent" ? block.width : block.width - 6}
+              height={block.borderColor === "transparent" ? block.height : block.height - 6}
+              fill={block.color}
+              stroke={block.borderColor}
+              strokeWidth={5}
+            />
+          </svg>
         )}
         {block.type === "circle" && (
-          <g>
-            <g>
-              <circle
-                cx={256}
-                cy={256}
-                r={250 - 25 / 2}
-                fill={block.color}
-                stroke={block.borderColor}
-                strokeWidth={25}
-              />
-            </g>
-          </g>
+          <svg
+            style={{
+              width: block.width * zoom,
+              height: block.height * zoom
+            }}
+          >
+            <ellipse
+              cx={block.width / 2}
+              cy={block.height / 2}
+              rx={block.borderColor === "transparent" ? block.width / 2 : (block.width - 10) / 2}
+              ry={block.borderColor === "transparent" ? block.height / 2 : (block.height - 10) / 2}
+              fill={block.color}
+              stroke={block.borderColor}
+              strokeWidth={5}
+            />
+          </svg>
         )}
-      </svg>
-      <GraphicResize block={block}/>
+      </div>
+      {block.active &&
+      <>
+        <div
+          style={{
+            zIndex: 2,
+            position: "absolute",
+            left: block.position.x * zoom - 2,
+            top: block.position.y * zoom - 2,
+            width: block.width * zoom,
+            height: block.height * zoom,
+            border: "3px solid blue",
+            borderRadius: "3px",
+            pointerEvents: "none",
+          }}
+        />
+        <GraphicResize block={block} />
+      </>
+      }
     </>
   );
 };

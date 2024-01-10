@@ -33,6 +33,7 @@ export function СreateInputBlock(
     font: { filter: fontCanvas.filter, opacity: fontCanvas.opacity },
   };
   dispatch(setHistory([...history, elHistory]));
+  clickedPosition = { x: clickedPosition.x - textBlock.width / 2, y: clickedPosition.y - textBlock.height / 2 };
   const inputBlock: TextBlock = {
     id: objectBlocks.length + 1,
     active: true,

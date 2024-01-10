@@ -38,6 +38,7 @@ const ImageComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           height: block.height * zoom,
           left: block.position.x * zoom,
           top: block.position.y * zoom,
+          cursor: "all-scroll",
         }}
         onClick={() => {
           if (!block.active) {
@@ -66,7 +67,24 @@ const ImageComponent: React.FC<{ object: ObjectType }> = ({ object }) => {
           dispatch(setDelY(e.clientY - block.position.y));
         }}
       />
-      <ImageResize block={block} />
+      {block.active &&
+      <>
+        <div
+          style={{
+            zIndex: 2,
+            position: "absolute",
+            left: block.position.x * zoom - 2,
+            top: block.position.y * zoom - 2,
+            width: block.width * zoom,
+            height: block.height * zoom,
+            border: "3px solid blue",
+            borderRadius: "3px",
+            pointerEvents: "none",
+          }}
+        />
+        <ImageResize block={block} />
+      </>
+      }
     </>
   );
 };

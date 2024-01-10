@@ -7,6 +7,9 @@ import { setZoom } from "../../../reducers/bottomBar/zoom";
 export function ViewZoomBlock() {
   const dispatch = useDispatch();
 
+  const ranges = [1295, 1310.5, 1330, 1347.5, 1368, 1385.5, 1405, 1425];
+  const zooms = [25, 50, 75, 100, 200, 400, 800];
+
   const Zoom = useSelector((state: RootState) => state.zoom.zoom);
   const [inpStyle, setInputStyle] = useState({ borderColor: "#749df6" });
 
@@ -24,11 +27,8 @@ export function ViewZoomBlock() {
     setDragInputZoom(false);
   };
 
-  const handleMouseMove = (e: { clientX: number; clientY: number }) => {
-    if (!dragInputZoom) return;
+  const Move = (e: { clientX: number; clientY: number }) => {
     const clientX = e.clientX;
-    const ranges = [1295, 1310.5, 1330, 1347.5, 1368, 1385.5, 1405, 1425];
-    const zooms = [25, 50, 75, 100, 200, 400, 800];
     for (let i = 0; i < 7; i++) {
       if (clientX >= ranges[i] && clientX < ranges[i + 1]) {
         dispatch(setZoom(zooms[i]));
@@ -36,6 +36,15 @@ export function ViewZoomBlock() {
         break;
       }
     }
+  };
+
+  const handleMouseMove = (e: { clientX: number; clientY: number }) => {
+    if (!dragInputZoom) return;
+    Move(e);
+  };
+
+  const handleMouseClick = (e: { clientX: number; clientY: number }) => {
+    Move(e);
   };
 
   const ZoomOutHover = () => {
@@ -115,6 +124,7 @@ export function ViewZoomBlock() {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={(event) => handleMouseMove(event)}
+        onClick={(event) => handleMouseClick(event)}
         onChange={handleChange}
       />
       <button

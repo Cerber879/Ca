@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../../index.module.css";
+import styles from "../panel.module.css";
 
 import ButtonObjFill from "./ObjectDecoration/ObjectStrokeAndFill/fillStatus/viewButtonFill";
 import ButtonObjStrokeFill from "./ObjectDecoration/ObjectStrokeAndFill/strokeAndFillStatus/viewButtonStrokeFill";

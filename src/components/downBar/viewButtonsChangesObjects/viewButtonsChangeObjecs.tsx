@@ -7,6 +7,8 @@ import { RootState } from "../../../ReduxStore";
 export function ViewButtonsChangeObjects() {
   const dispatch = useDispatch();
   const objectBlocks = useSelector((state: RootState) => state.app.objectBlocks);
+  const history = useSelector((state: RootState) => state.history.history);
+  const fontCanvas = useSelector((state: RootState) => state.fontCanvas);
 
   const [styleBackArrow, setStyleBackArrow] = useState<{ opacity: string; pointerEvents: "auto" | "none" }>
   ({ opacity: "1", pointerEvents: "auto" });
@@ -32,20 +34,20 @@ export function ViewButtonsChangeObjects() {
     <div className={`${styles.btnsActiveObject} ${styles.flex_block}`}>
       <button
         className={`${styles.text} ${styles.svg_btn}`}
-        onClick={() => moveElementBack(dispatch, objectBlocks)}
+        onClick={() => moveElementBack(dispatch, objectBlocks, history, fontCanvas)}
         style={styleBackArrow}
       >
         <img src="/images/down.svg" alt="Icon" width="17" height="17" />
       </button>
       <button
         className={`${styles.text} ${styles.svg_btn}`}
-        onClick={() => removeActiveStateObjects(dispatch, objectBlocks)}
+        onClick={() => removeActiveStateObjects(dispatch, objectBlocks, history, fontCanvas)}
       >
         <img src="/images/delete.svg" alt="Icon" width="17" height="17" />
       </button>
       <button
         className={`${styles.text} ${styles.svg_btn}`}
-        onClick={() => moveElementForward(dispatch, objectBlocks)}
+        onClick={() => moveElementForward(dispatch, objectBlocks, history, fontCanvas)}
         style={styleForwardArrow}
       >
         <img src="/images/up.svg" alt="Icon" width="17" height="17" />
